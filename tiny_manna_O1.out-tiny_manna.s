@@ -89,7 +89,7 @@ _ZNSt12_Vector_baseIiSaIiEED2Ev:
 	.weak	_ZNSt6vectorIiSaIiEE17_M_realloc_insertIJRKiEEEvN9__gnu_cxx17__normal_iteratorIPiS1_EEDpOT_
 	.type	_ZNSt6vectorIiSaIiEE17_M_realloc_insertIJRKiEEEvN9__gnu_cxx17__normal_iteratorIPiS1_EEDpOT_, @function
 _ZNSt6vectorIiSaIiEE17_M_realloc_insertIJRKiEEEvN9__gnu_cxx17__normal_iteratorIPiS1_EEDpOT_:
-.LFB4415:
+.LFB4416:
 	.cfi_startproc
 	endbr64
 	pushq	%r15
@@ -206,14 +206,14 @@ _ZNSt6vectorIiSaIiEE17_M_realloc_insertIJRKiEEEvN9__gnu_cxx17__normal_iteratorIP
 	.cfi_def_cfa_offset 8
 	ret
 	.cfi_endproc
-.LFE4415:
+.LFE4416:
 	.size	_ZNSt6vectorIiSaIiEE17_M_realloc_insertIJRKiEEEvN9__gnu_cxx17__normal_iteratorIPiS1_EEDpOT_, .-_ZNSt6vectorIiSaIiEE17_M_realloc_insertIJRKiEEEvN9__gnu_cxx17__normal_iteratorIPiS1_EEDpOT_
 	.section	.text._ZNSt6vectorIjSaIjEE17_M_realloc_insertIJjEEEvN9__gnu_cxx17__normal_iteratorIPjS1_EEDpOT_,"axG",@progbits,_ZNSt6vectorIjSaIjEE17_M_realloc_insertIJjEEEvN9__gnu_cxx17__normal_iteratorIPjS1_EEDpOT_,comdat
 	.align 2
 	.weak	_ZNSt6vectorIjSaIjEE17_M_realloc_insertIJjEEEvN9__gnu_cxx17__normal_iteratorIPjS1_EEDpOT_
 	.type	_ZNSt6vectorIjSaIjEE17_M_realloc_insertIJjEEEvN9__gnu_cxx17__normal_iteratorIPjS1_EEDpOT_, @function
 _ZNSt6vectorIjSaIjEE17_M_realloc_insertIJjEEEvN9__gnu_cxx17__normal_iteratorIPjS1_EEDpOT_:
-.LFB4548:
+.LFB4550:
 	.cfi_startproc
 	endbr64
 	pushq	%r15
@@ -330,14 +330,14 @@ _ZNSt6vectorIjSaIjEE17_M_realloc_insertIJjEEEvN9__gnu_cxx17__normal_iteratorIPjS
 	.cfi_def_cfa_offset 8
 	ret
 	.cfi_endproc
-.LFE4548:
+.LFE4550:
 	.size	_ZNSt6vectorIjSaIjEE17_M_realloc_insertIJjEEEvN9__gnu_cxx17__normal_iteratorIPjS1_EEDpOT_, .-_ZNSt6vectorIjSaIjEE17_M_realloc_insertIJjEEEvN9__gnu_cxx17__normal_iteratorIPjS1_EEDpOT_
 	.section	.text._ZNSt6vectorIjSaIjEE12emplace_backIJjEEERjDpOT_,"axG",@progbits,_ZNSt6vectorIjSaIjEE12emplace_backIJjEEERjDpOT_,comdat
 	.align 2
 	.weak	_ZNSt6vectorIjSaIjEE12emplace_backIJjEEERjDpOT_
 	.type	_ZNSt6vectorIjSaIjEE12emplace_backIJjEEERjDpOT_, @function
 _ZNSt6vectorIjSaIjEE12emplace_backIJjEEERjDpOT_:
-.LFB4421:
+.LFB4422:
 	.cfi_startproc
 	endbr64
 	pushq	%rbx
@@ -364,7 +364,7 @@ _ZNSt6vectorIjSaIjEE12emplace_backIJjEEERjDpOT_:
 	call	_ZNSt6vectorIjSaIjEE17_M_realloc_insertIJjEEEvN9__gnu_cxx17__normal_iteratorIPjS1_EEDpOT_
 	jmp	.L55
 	.cfi_endproc
-.LFE4421:
+.LFE4422:
 	.size	_ZNSt6vectorIjSaIjEE12emplace_backIJjEEERjDpOT_, .-_ZNSt6vectorIjSaIjEE12emplace_backIJjEEERjDpOT_
 	.section	.rodata.str1.1,"aMS",@progbits,1
 .LC1:
@@ -463,8 +463,8 @@ main:
 	leaq	_ZSt4cout(%rip), %rdi
 .LEHB0:
 	call	_ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc@PLT
-	leaq	576(%rsp), %r13
-	movq	%r13, %rcx
+	leaq	576(%rsp), %rbp
+	movq	%rbp, %rcx
 	movl	$0, %eax
 	movsd	.LC4(%rip), %xmm1
 .L58:
@@ -496,9 +496,9 @@ main:
 	movq	$0, 32(%rsp)
 	movq	$0, 40(%rsp)
 	movq	$0, 48(%rsp)
-	movq	%r13, %rbp
+	movq	%rbp, %r12
 	movl	$0, %ebx
-	leaq	28(%rsp), %r12
+	leaq	28(%rsp), %r13
 	jmp	.L65
 .L60:
 	cmpl	$-1, %eax
@@ -515,19 +515,15 @@ main:
 	movq	%rsi, 40(%rsp)
 .L59:
 	addl	$1, %ebx
-	addq	$2, %rbp
+	addq	$2, %r12
 	cmpl	$32768, %ebx
-	je	.L112
+	je	.L113
 .L65:
-	cmpw	$1, 0(%rbp)
+	cmpw	$1, (%r12)
 	jne	.L59
-	movw	$0, 0(%rbp)
+	movw	$0, (%r12)
 	call	rand@PLT
-	movl	%eax, %edx
-	shrl	$31, %edx
-	addl	%edx, %eax
-	andl	$1, %eax
-	subl	%edx, %eax
+	andl	$2, %eax
 	leal	-1(%rbx,%rax,2), %eax
 	cmpl	$32768, %eax
 	jne	.L60
@@ -535,12 +531,12 @@ main:
 	jmp	.L61
 .L63:
 	leaq	32(%rsp), %rdi
-	movq	%r12, %rdx
+	movq	%r13, %rdx
 .LEHB1:
 	call	_ZNSt6vectorIiSaIiEE17_M_realloc_insertIJRKiEEEvN9__gnu_cxx17__normal_iteratorIPiS1_EEDpOT_
 .LEHE1:
 	jmp	.L59
-.L112:
+.L113:
 	movq	32(%rsp), %rsi
 	movq	40(%rsp), %rax
 	subq	%rsi, %rax
@@ -577,10 +573,12 @@ main:
 	movq	$0, 32(%rsp)
 	movq	$0, 40(%rsp)
 	movq	$0, 48(%rsp)
-	movl	$0, %r14d
-	leaq	.LC9(%rip), %r15
+	movl	$0, %r12d
+	leaq	time_recorder_p1(%rip), %r13
+	movabsq	$8589934597, %rbx
+	leaq	time_recorder_p2(%rip), %r14
 	jmp	.L68
-.L95:
+.L96:
 	endbr64
 	movq	%rax, %rbx
 	leaq	32(%rsp), %rdi
@@ -588,54 +586,66 @@ main:
 	movq	%rbx, %rdi
 	call	_Unwind_Resume@PLT
 .LEHE2:
-.L114:
+.L115:
 	call	_ZNSt6chrono3_V212system_clock3nowEv@PLT
-	movq	%rax, (%rsp)
-	movl	$0, %ebp
+	movq	%rax, 8(%rsp)
+	movq	generator(%rip), %rdx
+	movl	$0, %esi
+	movl	$0, %eax
+	movl	$1, %r8d
 	jmp	.L73
 .L71:
-	addq	$1, %rbp
-	cmpq	$32768, %rbp
-	je	.L113
+	addq	$1, %rsi
+	cmpq	$32768, %rsi
+	je	.L114
 .L73:
-	movzwl	576(%rsp,%rbp,2), %r12d
-	cmpw	$1, %r12w
+	movzwl	576(%rsp,%rsi,2), %edi
+	cmpw	$1, %di
 	jbe	.L71
-	movzwl	%r12w, %r12d
-	movl	$0, %ebx
+	movzwl	%di, %edi
+	movl	$0, %ecx
 .L72:
-	call	rand@PLT
-	movl	%eax, %edx
-	shrl	$31, %edx
-	addl	%edx, %eax
+	imulq	$48271, %rdx, %r9
+	movq	%r9, %rax
+	mulq	%rbx
+	movq	%r9, %rax
+	subq	%rdx, %rax
+	shrq	%rax
+	addq	%rax, %rdx
+	shrq	$30, %rdx
+	movq	%rdx, %rax
+	salq	$31, %rax
+	subq	%rdx, %rax
+	movq	%r9, %rdx
+	subq	%rax, %rdx
+	movl	%edx, %eax
 	andl	$1, %eax
-	subl	%edx, %eax
-	leal	32767(%rbp,%rax,2), %eax
-	cltd
-	shrl	$17, %edx
-	addl	%edx, %eax
+	leal	32767(%rsi,%rax,2), %eax
 	andl	$32767, %eax
-	subl	%edx, %eax
-	cltq
 	addw	$1, 66112(%rsp,%rax,2)
-	addl	$1, %ebx
-	cmpl	%r12d, %ebx
+	addl	$1, %ecx
+	cmpl	%edi, %ecx
 	jne	.L72
+	movl	%r8d, %eax
 	jmp	.L71
-.L113:
+.L114:
+	testb	%al, %al
+	je	.L74
+	movq	%rdx, generator(%rip)
+.L74:
 	call	_ZNSt6chrono3_V212system_clock3nowEv@PLT
-	subq	(%rsp), %rax
+	subq	8(%rsp), %rax
 	movl	%eax, 24(%rsp)
 	leaq	24(%rsp), %rsi
-	leaq	time_recorder_p2(%rip), %rdi
+	movq	%r14, %rdi
 .LEHB3:
 	call	_ZNSt6vectorIjSaIjEE12emplace_backIJjEEERjDpOT_
 	call	_ZNSt6chrono3_V212system_clock3nowEv@PLT
-	movq	%rax, %rbx
+	movq	%rax, 8(%rsp)
 	leaq	66112(%rsp), %rdx
 	leaq	131648(%rsp), %rsi
-	movq	%r13, %rax
-.L74:
+	movq	%rbp, %rax
+.L75:
 	cmpw	$1, (%rax)
 	sete	%cl
 	movzbl	%cl, %ecx
@@ -644,45 +654,45 @@ main:
 	addq	$2, %rdx
 	addq	$2, %rax
 	cmpq	%rsi, %rdx
-	jne	.L74
+	jne	.L75
 	call	_ZNSt6chrono3_V212system_clock3nowEv@PLT
-	subq	%rbx, %rax
+	subq	8(%rsp), %rax
 	movl	%eax, 20(%rsp)
 	leaq	20(%rsp), %rsi
 	leaq	time_recorder_p3(%rip), %rdi
 	call	_ZNSt6vectorIjSaIjEE12emplace_backIJjEEERjDpOT_
 	call	_ZNSt6chrono3_V212system_clock3nowEv@PLT
-	subq	8(%rsp), %rax
+	subq	%r15, %rax
 	movl	%eax, 28(%rsp)
 	leaq	28(%rsp), %rsi
 	leaq	32(%rsp), %rdi
 	call	_ZNSt6vectorIjSaIjEE12emplace_backIJjEEERjDpOT_
-	leaq	65536(%r13), %rdx
-	movq	%r13, %rax
-	movl	$0, %ebx
-.L76:
+	leaq	65536(%rbp), %rdx
+	movq	%rbp, %rax
+	movl	$0, %r15d
+.L77:
 	cmpw	$2, (%rax)
-	sbbl	$-1, %ebx
+	sbbl	$-1, %r15d
 	addq	$2, %rax
-	cmpq	%rax, %rdx
-	jne	.L76
+	cmpq	%rdx, %rax
+	jne	.L77
 	leaq	64(%rsp), %rdi
-	movl	%ebx, %esi
+	movl	%r15d, %esi
 	call	_ZNSolsEi@PLT
 	movq	%rax, %rdi
 	movl	$1, %edx
-	movq	%r15, %rsi
+	leaq	.LC9(%rip), %rsi
 	call	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l@PLT
-	addl	$1, %r14d
-	testl	%ebx, %ebx
-	jle	.L96
-	cmpl	$7999, %r14d
-	jg	.L96
+	addl	$1, %r12d
+	testl	%r15d, %r15d
+	jle	.L97
+	cmpl	$7999, %r12d
+	jg	.L97
 .L68:
 	call	_ZNSt6chrono3_V212system_clock3nowEv@PLT
-	movq	%rax, 8(%rsp)
+	movq	%rax, %r15
 	call	_ZNSt6chrono3_V212system_clock3nowEv@PLT
-	movq	%rax, %rbx
+	movq	%rax, 8(%rsp)
 	leaq	66112(%rsp), %rax
 	leaq	131648(%rsp), %rdx
 .L70:
@@ -691,18 +701,18 @@ main:
 	cmpq	%rdx, %rax
 	jne	.L70
 	call	_ZNSt6chrono3_V212system_clock3nowEv@PLT
-	subq	%rbx, %rax
+	subq	8(%rsp), %rax
 	movl	%eax, 28(%rsp)
 	leaq	28(%rsp), %rsi
-	leaq	time_recorder_p1(%rip), %rdi
+	movq	%r13, %rdi
 	call	_ZNSt6vectorIjSaIjEE12emplace_backIJjEEERjDpOT_
-	jmp	.L114
-.L96:
+	jmp	.L115
+.L97:
 	leaq	.LC10(%rip), %rsi
 	leaq	_ZSt4cout(%rip), %rdi
 	call	_ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc@PLT
 	movq	%rax, %rdi
-	testl	%ebx, %ebx
+	testl	%r15d, %r15d
 	leaq	.LC1(%rip), %rsi
 	leaq	.LC2(%rip), %rax
 	cmovle	%rax, %rsi
@@ -712,15 +722,15 @@ main:
 	movq	40(%rsp), %rdx
 	movq	32(%rsp), %rsi
 	cmpq	%rdx, %rsi
-	je	.L90
+	je	.L91
 	movq	%rsi, %rcx
 	movl	$0, %eax
-.L80:
+.L81:
 	addl	(%rcx), %eax
 	addq	$4, %rcx
-	cmpq	%rdx, %rcx
-	jne	.L80
-.L79:
+	cmpq	%rcx, %rdx
+	jne	.L81
+.L80:
 	cltq
 	subq	%rsi, %rdx
 	movq	%rdx, %rcx
@@ -731,11 +741,11 @@ main:
 	leaq	.LC11(%rip), %rsi
 	leaq	_ZSt4cout(%rip), %rdi
 	call	_ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc@PLT
-	jmp	.L115
-.L90:
+	jmp	.L116
+.L91:
 	movl	$0, %eax
-	jmp	.L79
-.L115:
+	jmp	.L80
+.L116:
 	movq	%rax, %rdi
 	movl	%r13d, %esi
 	call	_ZNSolsEi@PLT
@@ -747,15 +757,15 @@ main:
 	movq	8+time_recorder_p1(%rip), %rdx
 	movq	time_recorder_p1(%rip), %rsi
 	cmpq	%rdx, %rsi
-	je	.L91
+	je	.L92
 	movq	%rsi, %rcx
 	movl	$0, %eax
-.L82:
+.L83:
 	addl	(%rcx), %eax
 	addq	$4, %rcx
-	cmpq	%rcx, %rdx
-	jne	.L82
-.L81:
+	cmpq	%rdx, %rcx
+	jne	.L83
+.L82:
 	cltq
 	subq	%rsi, %rdx
 	movq	%rdx, %rcx
@@ -763,19 +773,19 @@ main:
 	movl	$0, %edx
 	divq	%rcx
 	movq	%rax, %r12
-	movl	%eax, %r15d
+	movl	%eax, 8(%rsp)
 	movq	8+time_recorder_p2(%rip), %rdx
 	movq	time_recorder_p2(%rip), %rsi
 	cmpq	%rdx, %rsi
-	je	.L92
+	je	.L93
 	movq	%rsi, %rcx
 	movl	$0, %eax
-.L84:
+.L85:
 	addl	(%rcx), %eax
 	addq	$4, %rcx
 	cmpq	%rcx, %rdx
-	jne	.L84
-.L83:
+	jne	.L85
+.L84:
 	cltq
 	subq	%rsi, %rdx
 	movq	%rdx, %rcx
@@ -787,15 +797,15 @@ main:
 	movq	8+time_recorder_p3(%rip), %rdx
 	movq	time_recorder_p3(%rip), %rsi
 	cmpq	%rdx, %rsi
-	je	.L93
+	je	.L94
 	movq	%rsi, %rcx
 	movl	$0, %eax
-.L86:
+.L87:
 	addl	(%rcx), %eax
 	addq	$4, %rcx
-	cmpq	%rcx, %rdx
-	jne	.L86
-.L85:
+	cmpq	%rdx, %rcx
+	jne	.L87
+.L86:
 	cltq
 	subq	%rsi, %rdx
 	movq	%rdx, %rcx
@@ -803,23 +813,22 @@ main:
 	movl	$0, %edx
 	divq	%rcx
 	movq	%rax, %rbx
-	movl	%eax, 8(%rsp)
 	leaq	.LC13(%rip), %rsi
 	leaq	_ZSt4cout(%rip), %rdi
 	call	_ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc@PLT
-	jmp	.L116
-.L91:
-	movl	$0, %eax
-	jmp	.L81
+	jmp	.L117
 .L92:
 	movl	$0, %eax
-	jmp	.L83
+	jmp	.L82
 .L93:
 	movl	$0, %eax
-	jmp	.L85
-.L116:
+	jmp	.L84
+.L94:
+	movl	$0, %eax
+	jmp	.L86
+.L117:
 	movq	%rax, %rdi
-	movl	%r15d, %esi
+	movl	8(%rsp), %esi
 	call	_ZNSolsEi@PLT
 	movq	%rax, %rdi
 	leaq	.LC14(%rip), %rsi
@@ -829,7 +838,7 @@ main:
 	cvtsi2ssl	%r13d, %xmm2
 	pxor	%xmm0, %xmm0
 	cvtsi2ssl	%r12d, %xmm0
-	movss	%xmm2, (%rsp)
+	movss	%xmm2, 8(%rsp)
 	divss	%xmm2, %xmm0
 	cvtss2sd	%xmm0, %xmm0
 	call	_ZNSo9_M_insertIdEERSoT_@PLT
@@ -850,7 +859,7 @@ main:
 	movq	%rax, %rdi
 	pxor	%xmm0, %xmm0
 	cvtsi2ssl	%ebp, %xmm0
-	divss	(%rsp), %xmm0
+	divss	8(%rsp), %xmm0
 	cvtss2sd	%xmm0, %xmm0
 	call	_ZNSo9_M_insertIdEERSoT_@PLT
 	movq	%rax, %rdi
@@ -862,7 +871,7 @@ main:
 	leaq	_ZSt4cout(%rip), %rdi
 	call	_ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc@PLT
 	movq	%rax, %rdi
-	movl	8(%rsp), %esi
+	movl	%ebx, %esi
 	call	_ZNSolsEi@PLT
 	movq	%rax, %rdi
 	leaq	.LC14(%rip), %rsi
@@ -870,7 +879,7 @@ main:
 	movq	%rax, %rdi
 	pxor	%xmm0, %xmm0
 	cvtsi2ssl	%ebx, %xmm0
-	divss	(%rsp), %xmm0
+	divss	8(%rsp), %xmm0
 	cvtss2sd	%xmm0, %xmm0
 	call	_ZNSo9_M_insertIdEERSoT_@PLT
 	movq	%rax, %rdi
@@ -885,7 +894,7 @@ main:
 	call	_ZNSt14basic_ofstreamIcSt11char_traitsIcEED1Ev@PLT
 	movq	131656(%rsp), %rax
 	subq	%fs:40, %rax
-	jne	.L117
+	jne	.L118
 	movl	$0, %eax
 	addq	$131672, %rsp
 	.cfi_remember_state
@@ -903,7 +912,7 @@ main:
 	popq	%r15
 	.cfi_def_cfa_offset 8
 	ret
-.L94:
+.L95:
 	.cfi_restore_state
 	endbr64
 	movq	%rax, %rbx
@@ -915,7 +924,7 @@ main:
 .LEHB4:
 	call	_Unwind_Resume@PLT
 .LEHE4:
-.L117:
+.L118:
 	call	__stack_chk_fail@PLT
 	.cfi_endproc
 .LFE3848:
@@ -933,7 +942,7 @@ main:
 	.uleb128 0
 	.uleb128 .LEHB1-.LFB3848
 	.uleb128 .LEHE1-.LEHB1
-	.uleb128 .L95-.LFB3848
+	.uleb128 .L96-.LFB3848
 	.uleb128 0
 	.uleb128 .LEHB2-.LFB3848
 	.uleb128 .LEHE2-.LEHB2
@@ -941,7 +950,7 @@ main:
 	.uleb128 0
 	.uleb128 .LEHB3-.LFB3848
 	.uleb128 .LEHE3-.LEHB3
-	.uleb128 .L94-.LFB3848
+	.uleb128 .L95-.LFB3848
 	.uleb128 0
 	.uleb128 .LEHB4-.LFB3848
 	.uleb128 .LEHE4-.LEHB4
@@ -952,7 +961,7 @@ main:
 	.size	main, .-main
 	.type	_GLOBAL__sub_I_generator, @function
 _GLOBAL__sub_I_generator:
-.LFB4733:
+.LFB4736:
 	.cfi_startproc
 	endbr64
 	pushq	%rbp
@@ -1002,7 +1011,7 @@ _GLOBAL__sub_I_generator:
 	.cfi_def_cfa_offset 8
 	ret
 	.cfi_endproc
-.LFE4733:
+.LFE4736:
 	.size	_GLOBAL__sub_I_generator, .-_GLOBAL__sub_I_generator
 	.section	.init_array,"aw"
 	.align 8

@@ -3,3 +3,4 @@ tiny_manna
 *.dat
 *.o
 .vscode
+tiny_manna_*

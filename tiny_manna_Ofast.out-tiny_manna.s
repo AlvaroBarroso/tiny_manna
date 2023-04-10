@@ -29,7 +29,7 @@ _ZNSt6vectorIjSaIjEED2Ev:
 	.p2align 4
 	.type	_ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_.isra.0, @function
 _ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_.isra.0:
-.LFB4737:
+.LFB4740:
 	.cfi_startproc
 	pushq	%r12
 	.cfi_def_cfa_offset 16
@@ -73,7 +73,7 @@ _ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_.isra.0:
 .L9:
 	call	_ZSt16__throw_bad_castv@PLT
 	.cfi_endproc
-.LFE4737:
+.LFE4740:
 	.size	_ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_.isra.0, .-_ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_.isra.0
 	.section	.rodata._ZNSt6vectorIiSaIiEE17_M_realloc_insertIJRKiEEEvN9__gnu_cxx17__normal_iteratorIPiS1_EEDpOT_.str1.1,"aMS",@progbits,1
 .LC0:
@@ -84,7 +84,7 @@ _ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_.isra.0:
 	.weak	_ZNSt6vectorIiSaIiEE17_M_realloc_insertIJRKiEEEvN9__gnu_cxx17__normal_iteratorIPiS1_EEDpOT_
 	.type	_ZNSt6vectorIiSaIiEE17_M_realloc_insertIJRKiEEEvN9__gnu_cxx17__normal_iteratorIPiS1_EEDpOT_, @function
 _ZNSt6vectorIiSaIiEE17_M_realloc_insertIJRKiEEEvN9__gnu_cxx17__normal_iteratorIPiS1_EEDpOT_:
-.LFB4415:
+.LFB4416:
 	.cfi_startproc
 	endbr64
 	pushq	%r15
@@ -216,7 +216,7 @@ _ZNSt6vectorIiSaIiEE17_M_realloc_insertIJRKiEEEvN9__gnu_cxx17__normal_iteratorIP
 	leaq	.LC0(%rip), %rdi
 	call	_ZSt20__throw_length_errorPKc@PLT
 	.cfi_endproc
-.LFE4415:
+.LFE4416:
 	.size	_ZNSt6vectorIiSaIiEE17_M_realloc_insertIJRKiEEEvN9__gnu_cxx17__normal_iteratorIPiS1_EEDpOT_, .-_ZNSt6vectorIiSaIiEE17_M_realloc_insertIJRKiEEEvN9__gnu_cxx17__normal_iteratorIPiS1_EEDpOT_
 	.section	.text._ZNSt6vectorIjSaIjEE17_M_realloc_insertIJjEEEvN9__gnu_cxx17__normal_iteratorIPjS1_EEDpOT_,"axG",@progbits,_ZNSt6vectorIjSaIjEE17_M_realloc_insertIJjEEEvN9__gnu_cxx17__normal_iteratorIPjS1_EEDpOT_,comdat
 	.align 2
@@ -224,7 +224,7 @@ _ZNSt6vectorIiSaIiEE17_M_realloc_insertIJRKiEEEvN9__gnu_cxx17__normal_iteratorIP
 	.weak	_ZNSt6vectorIjSaIjEE17_M_realloc_insertIJjEEEvN9__gnu_cxx17__normal_iteratorIPjS1_EEDpOT_
 	.type	_ZNSt6vectorIjSaIjEE17_M_realloc_insertIJjEEEvN9__gnu_cxx17__normal_iteratorIPjS1_EEDpOT_, @function
 _ZNSt6vectorIjSaIjEE17_M_realloc_insertIJjEEEvN9__gnu_cxx17__normal_iteratorIPjS1_EEDpOT_:
-.LFB4548:
+.LFB4550:
 	.cfi_startproc
 	endbr64
 	pushq	%r15
@@ -356,7 +356,7 @@ _ZNSt6vectorIjSaIjEE17_M_realloc_insertIJjEEEvN9__gnu_cxx17__normal_iteratorIPjS
 	leaq	.LC0(%rip), %rdi
 	call	_ZSt20__throw_length_errorPKc@PLT
 	.cfi_endproc
-.LFE4548:
+.LFE4550:
 	.size	_ZNSt6vectorIjSaIjEE17_M_realloc_insertIJjEEEvN9__gnu_cxx17__normal_iteratorIPjS1_EEDpOT_, .-_ZNSt6vectorIjSaIjEE17_M_realloc_insertIJjEEEvN9__gnu_cxx17__normal_iteratorIPjS1_EEDpOT_
 	.section	.rodata.str1.1,"aMS",@progbits,1
 .LC2:
@@ -449,6 +449,7 @@ main:
 	subq	$632, %rsp
 	.cfi_def_cfa_offset 131760
 	xorl	%edi, %edi
+	leaq	_ZSt4cout(%rip), %r15
 	movq	%fs:40, %rax
 	movq	%rax, 131688(%rsp)
 	xorl	%eax, %eax
@@ -458,7 +459,7 @@ main:
 	movl	%eax, %edi
 	call	srand@PLT
 	leaq	.LC4(%rip), %rsi
-	leaq	_ZSt4cout(%rip), %rdi
+	movq	%r15, %rdi
 .LEHB0:
 	call	_ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc@PLT
 	movdqa	.LC1(%rip), %xmm4
@@ -530,20 +531,21 @@ main:
 	cmpq	%r12, %rax
 	jne	.L55
 	movl	$5, %edx
+	movq	%r15, %rdi
 	xorl	%ebp, %ebp
 	xorl	%r13d, %r13d
-	xorl	%r14d, %r14d
 	leaq	.LC10(%rip), %rsi
-	leaq	_ZSt4cout(%rip), %rdi
+	xorl	%r14d, %r14d
 	call	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l@PLT
-	leaq	_ZSt4cout(%rip), %rdi
-	leaq	60(%rsp), %r15
+	movq	%r15, %rdi
 	call	_ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_.isra.0
 	leaq	.LC11(%rip), %rsi
-	leaq	_ZSt4cout(%rip), %rdi
+	movq	%r15, %rdi
 	call	_ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc@PLT
 	pxor	%xmm0, %xmm0
+	leaq	60(%rsp), %rax
 	movq	$0, 80(%rsp)
+	movq	%rax, (%rsp)
 	movaps	%xmm0, 64(%rsp)
 	jmp	.L62
 	.p2align 4,,10
@@ -551,35 +553,31 @@ main:
 .L56:
 	addq	$1, %rbp
 	cmpq	$32768, %rbp
-	je	.L153
+	je	.L150
 .L62:
 	cmpw	$1, (%rbx,%rbp,2)
 	jne	.L56
 	xorl	%eax, %eax
 	movw	%ax, (%rbx,%rbp,2)
 	call	rand@PLT
-	movl	%eax, %edx
-	shrl	$31, %edx
-	addl	%edx, %eax
-	andl	$1, %eax
-	subl	%edx, %eax
+	andl	$2, %eax
 	leal	-1(%rbp,%rax,2), %eax
 	cmpl	$32768, %eax
-	je	.L154
+	je	.L151
 	cmpl	$-1, %eax
 	je	.L59
 	movl	%eax, 60(%rsp)
 .L58:
 	cmpq	%r13, %r14
 	je	.L60
-.L158:
+.L154:
 	movl	%eax, (%r14)
 	addq	$1, %rbp
 	addq	$4, %r14
 	movq	%r14, 72(%rsp)
 	cmpq	$32768, %rbp
 	jne	.L62
-.L153:
+.L150:
 	movq	64(%rsp), %rdi
 	movq	%r14, %rsi
 	xorl	%edx, %edx
@@ -603,40 +601,42 @@ main:
 .L65:
 	movl	$5, %edx
 	leaq	.LC10(%rip), %rsi
-	leaq	_ZSt4cout(%rip), %rdi
+	movq	%r15, %rdi
+	xorl	%r13d, %r13d
 	call	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l@PLT
-	leaq	_ZSt4cout(%rip), %rdi
+	movq	%r15, %rdi
+	movabsq	$8589934597, %rbp
 	call	_ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_.isra.0
 	leaq	.LC12(%rip), %rsi
-	leaq	_ZSt4cout(%rip), %rdi
+	movq	%r15, %rdi
 	call	_ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc@PLT
-	leaq	_ZSt4cout(%rip), %rdi
+	movq	%r15, %rdi
 	call	_ZNSo5flushEv@PLT
 	leaq	96(%rsp), %rax
 	movl	$16, %edx
 	leaq	.LC13(%rip), %rsi
 	movq	%rax, %rdi
-	movq	%rax, 40(%rsp)
+	movq	%rax, 16(%rsp)
 	call	_ZNSt14basic_ofstreamIcSt11char_traitsIcEEC1EPKcSt13_Ios_Openmode@PLT
 .LEHE0:
 	movl	$0, (%rsp)
 	pxor	%xmm0, %xmm0
 	movq	$0, 80(%rsp)
 	movq	$0, 8(%rsp)
-	movq	$0, 16(%rsp)
 	movaps	%xmm0, 64(%rsp)
 .L67:
 	call	_ZNSt6chrono3_V212system_clock3nowEv@PLT
-	movq	%rax, 32(%rsp)
+	movq	%rax, %r14
 	call	_ZNSt6chrono3_V212system_clock3nowEv@PLT
 	xorl	%esi, %esi
 	movl	$65536, %edx
 	movq	%r12, %rdi
-	movq	%rax, %rbp
+	movq	%rax, 24(%rsp)
 	call	memset@PLT
 	call	_ZNSt6chrono3_V212system_clock3nowEv@PLT
+	movq	24(%rsp), %rcx
 	movq	8+time_recorder_p1(%rip), %rsi
-	subq	%rbp, %rax
+	subq	%rcx, %rax
 	cmpq	16+time_recorder_p1(%rip), %rsi
 	movl	%eax, 60(%rsp)
 	je	.L70
@@ -645,58 +645,71 @@ main:
 	movq	%rsi, 8+time_recorder_p1(%rip)
 .L71:
 	call	_ZNSt6chrono3_V212system_clock3nowEv@PLT
-	xorl	%r13d, %r13d
-	movq	%rax, 24(%rsp)
-	jmp	.L73
+	movq	generator(%rip), %rdx
+	xorl	%edi, %edi
+	movq	%rax, %r9
+	jmp	.L74
 	.p2align 4,,10
 	.p2align 3
-.L156:
-	addq	$1, %r13
-	cmpq	$32768, %r13
-	je	.L155
+.L72:
+	addq	$1, %rdi
+	cmpq	$32768, %rdi
+	je	.L152
+.L74:
+	movzwl	(%rbx,%rdi,2), %esi
+	cmpw	$1, %si
+	jbe	.L72
+	movl	%edi, %r8d
+	xorl	%ecx, %ecx
+	.p2align 4,,10
+	.p2align 3
 .L73:
-	movzwl	(%rbx,%r13,2), %ebp
-	cmpw	$1, %bp
-	jbe	.L156
-	movl	%r13d, %r14d
-	xorl	%r15d, %r15d
-	.p2align 4,,10
-	.p2align 3
-.L75:
-	call	rand@PLT
-	addl	$1, %r15d
-	movl	%eax, %edx
-	shrl	$31, %edx
-	addl	%edx, %eax
+	imulq	$48271, %rdx, %r10
+	addl	$1, %ecx
+	movq	%r10, %rax
+	mulq	%rbp
+	movq	%r10, %rax
+	subq	%rdx, %rax
+	shrq	%rax
+	addq	%rax, %rdx
+	shrq	$30, %rdx
+	movq	%rdx, %rax
+	salq	$31, %rax
+	subq	%rdx, %rax
+	movq	%r10, %rdx
+	subq	%rax, %rdx
+	movl	%edx, %eax
 	andl	$1, %eax
-	subl	%edx, %eax
-	leal	32767(%r14,%rax,2), %eax
+	leal	32767(%r8,%rax,2), %eax
 	andl	$32767, %eax
 	addw	$1, 66144(%rsp,%rax,2)
-	cmpl	%ebp, %r15d
-	jne	.L75
-	addq	$1, %r13
-	cmpq	$32768, %r13
+	cmpl	%esi, %ecx
 	jne	.L73
-.L155:
+	addq	$1, %rdi
+	cmpq	$32768, %rdi
+	jne	.L74
+.L152:
+	movq	%r9, 24(%rsp)
+	movq	%rdx, generator(%rip)
 	call	_ZNSt6chrono3_V212system_clock3nowEv@PLT
+	movq	24(%rsp), %r9
 	movq	8+time_recorder_p2(%rip), %rsi
-	subq	24(%rsp), %rax
+	subq	%r9, %rax
 	cmpq	16+time_recorder_p2(%rip), %rsi
 	movl	%eax, 56(%rsp)
-	je	.L77
+	je	.L75
 	movl	%eax, (%rsi)
 	addq	$4, %rsi
 	movq	%rsi, 8+time_recorder_p2(%rip)
-.L78:
+.L76:
 	call	_ZNSt6chrono3_V212system_clock3nowEv@PLT
 	movq	%r12, %rdx
 	leaq	131680(%rsp), %rcx
-	movq	%rax, %rbp
+	movq	%rax, %rsi
 	movq	%rbx, %rax
 	.p2align 4,,10
 	.p2align 3
-.L79:
+.L77:
 	movdqa	(%rax), %xmm1
 	movdqa	(%rdx), %xmm0
 	addq	$16, %rdx
@@ -705,34 +718,34 @@ main:
 	psubw	%xmm1, %xmm0
 	movaps	%xmm0, -16(%rax)
 	cmpq	%rcx, %rdx
-	jne	.L79
+	jne	.L77
+	movq	%rsi, 24(%rsp)
 	call	_ZNSt6chrono3_V212system_clock3nowEv@PLT
+	movq	24(%rsp), %rsi
+	subq	%rsi, %rax
 	movq	8+time_recorder_p3(%rip), %rsi
-	subq	%rbp, %rax
 	cmpq	16+time_recorder_p3(%rip), %rsi
 	movl	%eax, 52(%rsp)
-	je	.L80
+	je	.L78
 	movl	%eax, (%rsi)
 	addq	$4, %rsi
 	movq	%rsi, 8+time_recorder_p3(%rip)
-.L81:
+.L79:
 	call	_ZNSt6chrono3_V212system_clock3nowEv@PLT
-	subq	32(%rsp), %rax
-	movq	8(%rsp), %rcx
+	subq	%r14, %rax
 	movl	%eax, 60(%rsp)
-	cmpq	%rcx, 16(%rsp)
-	je	.L82
-	movl	%eax, (%rcx)
-	addq	$4, %rcx
-	movq	%rcx, 8(%rsp)
-	movq	%rcx, 72(%rsp)
-.L83:
+	cmpq	%r13, 8(%rsp)
+	je	.L80
+	movl	%eax, 0(%r13)
+	addq	$4, %r13
+	movq	%r13, 72(%rsp)
+.L81:
 	movq	%rbx, %rax
 	pxor	%xmm1, %xmm1
 	pxor	%xmm4, %xmm4
 	.p2align 4,,10
 	.p2align 3
-.L84:
+.L82:
 	movdqa	(%rax), %xmm0
 	psubusw	.LC14(%rip), %xmm0
 	movdqa	%xmm4, %xmm3
@@ -746,16 +759,16 @@ main:
 	paddd	%xmm2, %xmm1
 	paddd	%xmm0, %xmm1
 	cmpq	%rax, %r12
-	jne	.L84
+	jne	.L82
 	movdqa	%xmm1, %xmm0
-	movq	40(%rsp), %rdi
+	movq	16(%rsp), %rdi
 	psrldq	$8, %xmm0
 	paddd	%xmm0, %xmm1
 	movdqa	%xmm1, %xmm0
 	psrldq	$4, %xmm0
 	paddd	%xmm0, %xmm1
 	movd	%xmm1, %esi
-	movd	%xmm1, %ebp
+	movd	%xmm1, %r14d
 .LEHB1:
 	call	_ZNSolsEi@PLT
 	movq	%rax, %rdi
@@ -764,46 +777,46 @@ main:
 	call	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l@PLT
 	addl	$1, (%rsp)
 	movl	(%rsp), %eax
-	testl	%ebp, %ebp
-	jle	.L123
+	testl	%r14d, %r14d
+	jle	.L121
 	cmpl	$7999, %eax
 	jle	.L67
-.L123:
+.L121:
 	movl	$7, %edx
 	leaq	.LC16(%rip), %rsi
-	leaq	_ZSt4cout(%rip), %rdi
+	movq	%r15, %rdi
 	call	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l@PLT
-	testl	%ebp, %ebp
+	testl	%r14d, %r14d
 	leaq	.LC2(%rip), %rsi
 	leaq	.LC3(%rip), %rax
+	movq	%r15, %rdi
 	cmove	%rax, %rsi
-	leaq	_ZSt4cout(%rip), %rdi
 	call	_ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc@PLT
 	movq	%rax, %rdi
 	call	_ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_.isra.0
 	movq	64(%rsp), %rbp
-	movq	8(%rsp), %rax
-	cmpq	%rax, %rbp
-	je	.L113
-	subq	%rbp, %rax
+	cmpq	%r13, %rbp
+	je	.L111
+	movq	%r13, %rax
 	movq	%rbp, %rdx
+	subq	%rbp, %rax
 	subq	$4, %rax
 	movq	%rax, %rcx
 	shrq	$2, %rcx
 	addq	$1, %rcx
 	cmpq	$8, %rax
-	jbe	.L114
+	jbe	.L112
 	movq	%rcx, %rax
 	pxor	%xmm0, %xmm0
 	shrq	$2, %rax
 	salq	$4, %rax
 	addq	%rbp, %rax
-.L89:
+.L87:
 	movdqu	(%rdx), %xmm6
 	addq	$16, %rdx
 	paddd	%xmm6, %xmm0
-	cmpq	%rax, %rdx
-	jne	.L89
+	cmpq	%rdx, %rax
+	jne	.L87
 	movdqa	%xmm0, %xmm1
 	movq	%rcx, %rsi
 	psrldq	$8, %xmm1
@@ -814,33 +827,32 @@ main:
 	psrldq	$4, %xmm1
 	paddd	%xmm1, %xmm0
 	movd	%xmm0, %eax
-	cmpq	%rsi, %rcx
-	je	.L87
-.L88:
-	movq	8(%rsp), %rdi
+	cmpq	%rcx, %rsi
+	je	.L85
+.L86:
 	leaq	4(%rdx), %rcx
 	addl	(%rdx), %eax
-	cmpq	%rcx, %rdi
-	je	.L87
+	cmpq	%rcx, %r13
+	je	.L85
 	leaq	8(%rdx), %rcx
 	addl	4(%rdx), %eax
-	cmpq	%rcx, %rdi
-	je	.L87
+	cmpq	%rcx, %r13
+	je	.L85
 	addl	8(%rdx), %eax
-.L87:
-	movq	8(%rsp), %rcx
+.L85:
+	movq	%r13, %rcx
 	cltq
 	xorl	%edx, %edx
-	leaq	.LC17(%rip), %rsi
-	leaq	_ZSt4cout(%rip), %rdi
+	movq	%r15, %rdi
 	subq	%rbp, %rcx
+	leaq	.LC17(%rip), %rsi
 	sarq	$2, %rcx
 	divq	%rcx
 	movl	$30, %edx
 	movq	%rax, %rbx
 	call	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l@PLT
 	movl	%ebx, %esi
-	leaq	_ZSt4cout(%rip), %rdi
+	movq	%r15, %rdi
 	call	_ZNSolsEi@PLT
 	movl	$3, %edx
 	leaq	.LC18(%rip), %rsi
@@ -851,6 +863,60 @@ main:
 	call	_ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_.isra.0
 	movq	8+time_recorder_p1(%rip), %rdx
 	movq	time_recorder_p1(%rip), %rcx
+	cmpq	%rdx, %rcx
+	je	.L113
+	leaq	-4(%rdx), %rax
+	movq	%rcx, %rsi
+	subq	%rcx, %rax
+	movq	%rax, %rdi
+	shrq	$2, %rdi
+	addq	$1, %rdi
+	cmpq	$8, %rax
+	jbe	.L114
+	movq	%rdi, %rax
+	pxor	%xmm0, %xmm0
+	shrq	$2, %rax
+	salq	$4, %rax
+	addq	%rcx, %rax
+.L92:
+	movdqu	(%rsi), %xmm7
+	addq	$16, %rsi
+	paddd	%xmm7, %xmm0
+	cmpq	%rax, %rsi
+	jne	.L92
+	movdqa	%xmm0, %xmm1
+	movq	%rdi, %r8
+	psrldq	$8, %xmm1
+	andq	$-4, %r8
+	paddd	%xmm1, %xmm0
+	leaq	(%rcx,%r8,4), %rsi
+	movdqa	%xmm0, %xmm1
+	psrldq	$4, %xmm1
+	paddd	%xmm1, %xmm0
+	movd	%xmm0, %eax
+	cmpq	%rdi, %r8
+	je	.L90
+.L91:
+	leaq	4(%rsi), %rdi
+	addl	(%rsi), %eax
+	cmpq	%rdi, %rdx
+	je	.L90
+	leaq	8(%rsi), %rdi
+	addl	4(%rsi), %eax
+	cmpq	%rdi, %rdx
+	je	.L90
+	addl	8(%rsi), %eax
+.L90:
+	subq	%rcx, %rdx
+	cltq
+	movq	%rdx, %rcx
+	xorl	%edx, %edx
+	sarq	$2, %rcx
+	divq	%rcx
+	movq	8+time_recorder_p2(%rip), %rdx
+	movq	time_recorder_p2(%rip), %rcx
+	movq	%rax, (%rsp)
+	movl	%eax, %r12d
 	cmpq	%rdx, %rcx
 	je	.L115
 	leaq	-4(%rdx), %rax
@@ -866,12 +932,12 @@ main:
 	shrq	$2, %rax
 	salq	$4, %rax
 	addq	%rcx, %rax
-.L94:
-	movdqu	(%rsi), %xmm7
+.L97:
+	movdqu	(%rsi), %xmm6
 	addq	$16, %rsi
-	paddd	%xmm7, %xmm0
-	cmpq	%rax, %rsi
-	jne	.L94
+	paddd	%xmm6, %xmm0
+	cmpq	%rsi, %rax
+	jne	.L97
 	movdqa	%xmm0, %xmm1
 	movq	%rdi, %r8
 	psrldq	$8, %xmm1
@@ -883,28 +949,28 @@ main:
 	paddd	%xmm1, %xmm0
 	movd	%xmm0, %eax
 	cmpq	%rdi, %r8
-	je	.L92
-.L93:
+	je	.L95
+.L96:
 	leaq	4(%rsi), %rdi
 	addl	(%rsi), %eax
 	cmpq	%rdi, %rdx
-	je	.L92
+	je	.L95
 	leaq	8(%rsi), %rdi
 	addl	4(%rsi), %eax
 	cmpq	%rdi, %rdx
-	je	.L92
+	je	.L95
 	addl	8(%rsi), %eax
-.L92:
+.L95:
 	subq	%rcx, %rdx
 	cltq
 	movq	%rdx, %rcx
 	xorl	%edx, %edx
 	sarq	$2, %rcx
 	divq	%rcx
-	movq	8+time_recorder_p2(%rip), %rdx
-	movq	time_recorder_p2(%rip), %rcx
-	movq	%rax, (%rsp)
-	movl	%eax, %r12d
+	movq	8+time_recorder_p3(%rip), %rdx
+	movq	time_recorder_p3(%rip), %rcx
+	movq	%rax, 32(%rsp)
+	movl	%eax, 24(%rsp)
 	cmpq	%rdx, %rcx
 	je	.L117
 	leaq	-4(%rdx), %rax
@@ -920,66 +986,12 @@ main:
 	shrq	$2, %rax
 	salq	$4, %rax
 	addq	%rcx, %rax
-.L99:
-	movdqu	(%rsi), %xmm6
-	addq	$16, %rsi
-	paddd	%xmm6, %xmm0
-	cmpq	%rax, %rsi
-	jne	.L99
-	movdqa	%xmm0, %xmm1
-	movq	%rdi, %r8
-	psrldq	$8, %xmm1
-	andq	$-4, %r8
-	paddd	%xmm1, %xmm0
-	leaq	(%rcx,%r8,4), %rsi
-	movdqa	%xmm0, %xmm1
-	psrldq	$4, %xmm1
-	paddd	%xmm1, %xmm0
-	movd	%xmm0, %eax
-	cmpq	%rdi, %r8
-	je	.L97
-.L98:
-	leaq	4(%rsi), %rdi
-	addl	(%rsi), %eax
-	cmpq	%rdi, %rdx
-	je	.L97
-	leaq	8(%rsi), %rdi
-	addl	4(%rsi), %eax
-	cmpq	%rdi, %rdx
-	je	.L97
-	addl	8(%rsi), %eax
-.L97:
-	subq	%rcx, %rdx
-	cltq
-	movq	%rdx, %rcx
-	xorl	%edx, %edx
-	sarq	$2, %rcx
-	divq	%rcx
-	movq	8+time_recorder_p3(%rip), %rdx
-	movq	time_recorder_p3(%rip), %rcx
-	movq	%rax, 8(%rsp)
-	movl	%eax, %r15d
-	cmpq	%rdx, %rcx
-	je	.L119
-	leaq	-4(%rdx), %rax
-	movq	%rcx, %rsi
-	subq	%rcx, %rax
-	movq	%rax, %rdi
-	shrq	$2, %rdi
-	addq	$1, %rdi
-	cmpq	$8, %rax
-	jbe	.L120
-	movq	%rdi, %rax
-	pxor	%xmm0, %xmm0
-	shrq	$2, %rax
-	salq	$4, %rax
-	addq	%rcx, %rax
-.L104:
+.L102:
 	movdqu	(%rsi), %xmm7
 	addq	$16, %rsi
 	paddd	%xmm7, %xmm0
 	cmpq	%rsi, %rax
-	jne	.L104
+	jne	.L102
 	movdqa	%xmm0, %xmm1
 	movq	%rdi, %r8
 	psrldq	$8, %xmm1
@@ -991,32 +1003,32 @@ main:
 	paddd	%xmm1, %xmm0
 	movd	%xmm0, %eax
 	cmpq	%r8, %rdi
-	je	.L102
-.L103:
+	je	.L100
+.L101:
 	leaq	4(%rsi), %rdi
 	addl	(%rsi), %eax
 	cmpq	%rdi, %rdx
-	je	.L102
+	je	.L100
 	leaq	8(%rsi), %rdi
 	addl	4(%rsi), %eax
 	cmpq	%rdi, %rdx
-	je	.L102
+	je	.L100
 	addl	8(%rsi), %eax
-.L102:
+.L100:
 	subq	%rcx, %rdx
 	cltq
 	leaq	.LC19(%rip), %rsi
+	movq	%r15, %rdi
 	movq	%rdx, %rcx
 	xorl	%edx, %edx
-	leaq	_ZSt4cout(%rip), %rdi
 	sarq	$2, %rcx
 	divq	%rcx
 	movl	$44, %edx
-	movq	%rax, 24(%rsp)
+	movq	%rax, 40(%rsp)
 	movl	%eax, %r14d
 	call	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l@PLT
 	movl	%r12d, %esi
-	leaq	_ZSt4cout(%rip), %rdi
+	movq	%r15, %rdi
 	call	_ZNSolsEi@PLT
 	leaq	.LC20(%rip), %r13
 	movl	$14, %edx
@@ -1043,10 +1055,10 @@ main:
 	call	_ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_.isra.0
 	movl	$44, %edx
 	leaq	.LC22(%rip), %rsi
-	leaq	_ZSt4cout(%rip), %rdi
+	movq	%r15, %rdi
 	call	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l@PLT
-	movl	%r15d, %esi
-	leaq	_ZSt4cout(%rip), %rdi
+	movl	24(%rsp), %esi
+	movq	%r15, %rdi
 	call	_ZNSolsEi@PLT
 	movl	$14, %edx
 	movq	%r13, %rsi
@@ -1055,7 +1067,7 @@ main:
 	call	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l@PLT
 	pxor	%xmm0, %xmm0
 	movq	%r12, %rdi
-	cvtsi2ssl	8(%rsp), %xmm0
+	cvtsi2ssl	32(%rsp), %xmm0
 	divss	(%rsp), %xmm0
 	cvtss2sd	%xmm0, %xmm0
 	call	_ZNSo9_M_insertIdEERSoT_@PLT
@@ -1068,10 +1080,10 @@ main:
 	call	_ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_.isra.0
 	movl	$44, %edx
 	leaq	.LC23(%rip), %rsi
-	leaq	_ZSt4cout(%rip), %rdi
+	movq	%r15, %rdi
 	call	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l@PLT
 	movl	%r14d, %esi
-	leaq	_ZSt4cout(%rip), %rdi
+	movq	%r15, %rdi
 	call	_ZNSolsEi@PLT
 	movl	$14, %edx
 	movq	%r13, %rsi
@@ -1080,7 +1092,7 @@ main:
 	call	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l@PLT
 	pxor	%xmm0, %xmm0
 	movq	%r12, %rdi
-	cvtsi2ssl	24(%rsp), %xmm0
+	cvtsi2ssl	40(%rsp), %xmm0
 	divss	(%rsp), %xmm0
 	cvtss2sd	%xmm0, %xmm0
 	call	_ZNSo9_M_insertIdEERSoT_@PLT
@@ -1093,17 +1105,17 @@ main:
 	call	_ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_.isra.0
 .LEHE1:
 	testq	%rbp, %rbp
-	je	.L107
-	movq	16(%rsp), %rsi
+	je	.L105
+	movq	8(%rsp), %rsi
 	movq	%rbp, %rdi
 	subq	%rbp, %rsi
 	call	_ZdlPvm@PLT
-.L107:
-	movq	40(%rsp), %rdi
+.L105:
+	movq	16(%rsp), %rdi
 	call	_ZNSt14basic_ofstreamIcSt11char_traitsIcEED1Ev@PLT
 	movq	131688(%rsp), %rax
 	subq	%fs:40, %rax
-	jne	.L157
+	jne	.L153
 	addq	$131704, %rsp
 	.cfi_remember_state
 	.cfi_def_cfa_offset 56
@@ -1121,15 +1133,15 @@ main:
 	popq	%r15
 	.cfi_def_cfa_offset 8
 	ret
-.L154:
+.L151:
 	.cfi_restore_state
 	movl	$0, 60(%rsp)
 	xorl	%eax, %eax
 	cmpq	%r13, %r14
-	jne	.L158
+	jne	.L154
 .L60:
+	movq	(%rsp), %rdx
 	leaq	64(%rsp), %rdi
-	movq	%r15, %rdx
 	movq	%r14, %rsi
 .LEHB2:
 	call	_ZNSt6vectorIiSaIiEE17_M_realloc_insertIJRKiEEEvN9__gnu_cxx17__normal_iteratorIPiS1_EEDpOT_
@@ -1141,64 +1153,63 @@ main:
 	movl	$32767, 60(%rsp)
 	movl	$32767, %eax
 	jmp	.L58
-.L82:
-	movq	16(%rsp), %rsi
+.L80:
+	movq	8(%rsp), %rsi
 	leaq	60(%rsp), %rdx
 	leaq	64(%rsp), %rdi
 .LEHB3:
 	call	_ZNSt6vectorIjSaIjEE17_M_realloc_insertIJjEEEvN9__gnu_cxx17__normal_iteratorIPjS1_EEDpOT_
 	movq	80(%rsp), %rax
-	movq	%rax, 16(%rsp)
-	movq	72(%rsp), %rax
+	movq	72(%rsp), %r13
 	movq	%rax, 8(%rsp)
-	jmp	.L83
-.L80:
+	jmp	.L81
+.L78:
 	leaq	52(%rsp), %rdx
 	leaq	time_recorder_p3(%rip), %rdi
 	call	_ZNSt6vectorIjSaIjEE17_M_realloc_insertIJjEEEvN9__gnu_cxx17__normal_iteratorIPjS1_EEDpOT_
-	jmp	.L81
-.L77:
+	jmp	.L79
+.L75:
 	leaq	56(%rsp), %rdx
 	leaq	time_recorder_p2(%rip), %rdi
 	call	_ZNSt6vectorIjSaIjEE17_M_realloc_insertIJjEEEvN9__gnu_cxx17__normal_iteratorIPjS1_EEDpOT_
-	jmp	.L78
+	jmp	.L76
 .L70:
 	leaq	60(%rsp), %rdx
 	leaq	time_recorder_p1(%rip), %rdi
 	call	_ZNSt6vectorIjSaIjEE17_M_realloc_insertIJjEEEvN9__gnu_cxx17__normal_iteratorIPjS1_EEDpOT_
 .LEHE3:
 	jmp	.L71
+.L111:
+	xorl	%eax, %eax
+	jmp	.L85
+.L112:
+	xorl	%eax, %eax
+	jmp	.L86
 .L113:
 	xorl	%eax, %eax
-	jmp	.L87
+	jmp	.L90
 .L114:
 	xorl	%eax, %eax
-	jmp	.L88
+	jmp	.L91
 .L115:
 	xorl	%eax, %eax
-	jmp	.L92
+	jmp	.L95
 .L116:
 	xorl	%eax, %eax
-	jmp	.L93
+	jmp	.L96
 .L117:
 	xorl	%eax, %eax
-	jmp	.L97
+	jmp	.L100
 .L118:
 	xorl	%eax, %eax
-	jmp	.L98
-.L119:
-	xorl	%eax, %eax
-	jmp	.L102
-.L120:
-	xorl	%eax, %eax
-	jmp	.L103
-.L157:
+	jmp	.L101
+.L153:
 	call	__stack_chk_fail@PLT
-.L121:
+.L119:
 	endbr64
 	movq	%rax, %rbp
-	jmp	.L108
-.L122:
+	jmp	.L106
+.L120:
 	endbr64
 	movq	%rax, %rbp
 	jmp	.L68
@@ -1216,15 +1227,15 @@ main:
 	.uleb128 0
 	.uleb128 .LEHB1-.LFB3848
 	.uleb128 .LEHE1-.LEHB1
-	.uleb128 .L121-.LFB3848
+	.uleb128 .L119-.LFB3848
 	.uleb128 0
 	.uleb128 .LEHB2-.LFB3848
 	.uleb128 .LEHE2-.LEHB2
-	.uleb128 .L122-.LFB3848
+	.uleb128 .L120-.LFB3848
 	.uleb128 0
 	.uleb128 .LEHB3-.LFB3848
 	.uleb128 .LEHE3-.LEHB3
-	.uleb128 .L121-.LFB3848
+	.uleb128 .L119-.LFB3848
 	.uleb128 0
 .LLSDACSE3848:
 	.section	.text.startup
@@ -1236,7 +1247,7 @@ main:
 	.type	main.cold, @function
 main.cold:
 .LFSB3848:
-.L108:
+.L106:
 	.cfi_def_cfa_offset 131760
 	.cfi_offset 3, -56
 	.cfi_offset 6, -48
@@ -1248,10 +1259,10 @@ main.cold:
 	movq	80(%rsp), %rsi
 	subq	%rdi, %rsi
 	testq	%rdi, %rdi
-	je	.L109
+	je	.L107
 	call	_ZdlPvm@PLT
-.L109:
-	movq	40(%rsp), %rdi
+.L107:
+	movq	16(%rsp), %rdi
 	call	_ZNSt14basic_ofstreamIcSt11char_traitsIcEED1Ev@PLT
 	movq	%rbp, %rdi
 .LEHB4:
@@ -1292,7 +1303,7 @@ main.cold:
 	.p2align 4
 	.type	_GLOBAL__sub_I_generator, @function
 _GLOBAL__sub_I_generator:
-.LFB4733:
+.LFB4736:
 	.cfi_startproc
 	endbr64
 	pushq	%r12
@@ -1341,7 +1352,7 @@ _GLOBAL__sub_I_generator:
 	.cfi_def_cfa_offset 8
 	jmp	__cxa_atexit@PLT
 	.cfi_endproc
-.LFE4733:
+.LFE4736:
 	.size	_GLOBAL__sub_I_generator, .-_GLOBAL__sub_I_generator
 	.section	.init_array,"aw"
 	.align 8

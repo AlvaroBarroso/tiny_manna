@@ -1,17 +1,17 @@
 
  Performance counter stats for './tiny_manna_O2.out' (5 runs):
 
-            688,33 msec task-clock                #    0,978 CPUs utilized            ( +-  0,73% )
-                 1      context-switches          #    1,422 /sec                     ( +- 48,99% )
+            485,67 msec task-clock                #    0,961 CPUs utilized            ( +-  1,50% )
+                 2      context-switches          #    3,959 /sec                     ( +- 40,62% )
                  0      cpu-migrations            #    0,000 /sec                   
-               245      page-faults               #  348,414 /sec                     ( +-  0,08% )
-     2.774.269.267      cycles                    #    3,945 GHz                      ( +-  0,78% )  (83,15%)
-        32.085.758      stalled-cycles-frontend   #    1,13% frontend cycles idle     ( +-  4,08% )  (83,15%)
-       331.500.413      stalled-cycles-backend    #   11,72% backend cycles idle      ( +-  1,13% )  (83,15%)
-     7.490.344.137      instructions              #    2,65  insn per cycle         
-                                                  #    0,04  stalled cycles per insn  ( +-  0,35% )  (83,30%)
-     1.564.265.340      branches                  #    2,225 G/sec                    ( +-  0,44% )  (83,73%)
-        21.620.186      branch-misses             #    1,37% of all branches          ( +-  1,18% )  (83,53%)
+               245      page-faults               #  484,989 /sec                     ( +-  0,15% )
+     1.974.363.153      cycles                    #    3,908 GHz                      ( +-  1,56% )  (82,95%)
+        31.568.305      stalled-cycles-frontend   #    1,54% frontend cycles idle     ( +-  1,71% )  (83,53%)
+       485.557.515      stalled-cycles-backend    #   23,70% backend cycles idle      ( +-  0,70% )  (83,53%)
+     5.969.072.910      instructions              #    2,91  insn per cycle         
+                                                  #    0,08  stalled cycles per insn  ( +-  0,15% )  (83,53%)
+     1.086.675.441      branches                  #    2,151 G/sec                    ( +-  0,05% )  (83,53%)
+        20.228.646      branch-misses             #    1,86% of all branches          ( +-  1,61% )  (82,94%)
 
-           0,70387 +- 0,00508 seconds time elapsed  ( +-  0,72% )
+           0,50562 +- 0,00725 seconds time elapsed  ( +-  1,43% )
 

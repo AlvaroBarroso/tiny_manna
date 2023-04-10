@@ -2,39 +2,39 @@ estado inicial estable de la pila de arena...LISTO
 estado inicial desestabilizado de la pila de arena...LISTO
 evolucion de la pila de arena...LISTO: se acabo el tiempo
 
-Tiempo promedio de ejecucion: 95868 ns
-Tiempo promedio de ejecucion de la parte 1: 8520 ns represents0.0888722%
-Tiempo promedio de ejecucion de la parte 2: 58492 ns represents0.610131%
-Tiempo promedio de ejecucion de la parte 3: 28751 ns represents0.299902%
+Tiempo promedio de ejecucion: 69306 ns
+Tiempo promedio de ejecucion de la parte 1: 8518 ns represents0.122904%
+Tiempo promedio de ejecucion de la parte 2: 32079 ns represents0.46286%
+Tiempo promedio de ejecucion de la parte 3: 28604 ns represents0.41272%
 estado inicial estable de la pila de arena...LISTO
 estado inicial desestabilizado de la pila de arena...LISTO
 evolucion de la pila de arena...LISTO: se acabo el tiempo
 
-Tiempo promedio de ejecucion: 99690 ns
-Tiempo promedio de ejecucion de la parte 1: 8411 ns represents0.0843716%
-Tiempo promedio de ejecucion de la parte 2: 62718 ns represents0.62913%
-Tiempo promedio de ejecucion de la parte 3: 28459 ns represents0.285475%
+Tiempo promedio de ejecucion: 69639 ns
+Tiempo promedio de ejecucion de la parte 1: 8531 ns represents0.122503%
+Tiempo promedio de ejecucion de la parte 2: 32759 ns represents0.470412%
+Tiempo promedio de ejecucion de la parte 3: 28246 ns represents0.405606%
 estado inicial estable de la pila de arena...LISTO
 estado inicial desestabilizado de la pila de arena...LISTO
 evolucion de la pila de arena...LISTO: se acabo el tiempo
 
-Tiempo promedio de ejecucion: 98610 ns
-Tiempo promedio de ejecucion de la parte 1: 8350 ns represents0.084677%
-Tiempo promedio de ejecucion de la parte 2: 61626 ns represents0.624947%
-Tiempo promedio de ejecucion de la parte 3: 28531 ns represents0.289332%
+Tiempo promedio de ejecucion: 68963 ns
+Tiempo promedio de ejecucion de la parte 1: 8343 ns represents0.120978%
+Tiempo promedio de ejecucion de la parte 2: 32222 ns represents0.467236%
+Tiempo promedio de ejecucion de la parte 3: 28295 ns represents0.410292%
 estado inicial estable de la pila de arena...LISTO
 estado inicial desestabilizado de la pila de arena...LISTO
 evolucion de la pila de arena...LISTO: se acabo el tiempo
 
-Tiempo promedio de ejecucion: 97406 ns
-Tiempo promedio de ejecucion de la parte 1: 8355 ns represents0.085775%
-Tiempo promedio de ejecucion de la parte 2: 60421 ns represents0.620301%
-Tiempo promedio de ejecucion de la parte 3: 28525 ns represents0.292846%
+Tiempo promedio de ejecucion: 68339 ns
+Tiempo promedio de ejecucion de la parte 1: 8252 ns represents0.120751%
+Tiempo promedio de ejecucion de la parte 2: 31740 ns represents0.464449%
+Tiempo promedio de ejecucion de la parte 3: 28247 ns represents0.413336%
 estado inicial estable de la pila de arena...LISTO
 estado inicial desestabilizado de la pila de arena...LISTO
 evolucion de la pila de arena...LISTO: se acabo el tiempo
 
-Tiempo promedio de ejecucion: 95325 ns
-Tiempo promedio de ejecucion de la parte 1: 8308 ns represents0.0871545%
-Tiempo promedio de ejecucion de la parte 2: 58476 ns represents0.613438%
-Tiempo promedio de ejecucion de la parte 3: 28437 ns represents0.298316%
+Tiempo promedio de ejecucion: 70071 ns
+Tiempo promedio de ejecucion de la parte 1: 8514 ns represents0.121505%
+Tiempo promedio de ejecucion de la parte 2: 33253 ns represents0.474562%
+Tiempo promedio de ejecucion de la parte 3: 28202 ns represents0.402477%
