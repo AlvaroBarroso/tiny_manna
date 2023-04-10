@@ -1,0 +1,17 @@
+
+ Performance counter stats for './tiny_manna_Ofast.out' (5 runs):
+
+            503,59 msec task-clock                #    1,060 CPUs utilized            ( +-  1,62% )
+                 0      context-switches          #    0,000 /sec                   
+                 0      cpu-migrations            #    0,000 /sec                   
+               245      page-faults               #  516,492 /sec                     ( +-  0,13% )
+     2.020.775.753      cycles                    #    4,260 GHz                      ( +-  1,63% )  (83,32%)
+        33.614.108      stalled-cycles-frontend   #    1,76% frontend cycles idle     ( +-  7,27% )  (83,32%)
+       134.698.864      stalled-cycles-backend    #    7,06% backend cycles idle      ( +-  4,13% )  (83,32%)
+     4.728.788.415      instructions              #    2,48  insn per cycle         
+                                                  #    0,03  stalled cycles per insn  ( +-  0,83% )  (83,32%)
+     1.143.075.478      branches                  #    2,410 G/sec                    ( +-  0,80% )  (83,32%)
+        22.825.508      branch-misses             #    2,06% of all branches          ( +-  1,60% )  (83,40%)
+
+           0,47501 +- 0,00807 seconds time elapsed  ( +-  1,70% )
+

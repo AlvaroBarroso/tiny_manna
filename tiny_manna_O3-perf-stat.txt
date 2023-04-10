@@ -1,0 +1,17 @@
+
+ Performance counter stats for './tiny_manna_O3.out' (5 runs):
+
+            468,74 msec task-clock                #    0,961 CPUs utilized            ( +-  1,97% )
+                 0      context-switches          #    0,000 /sec                   
+                 0      cpu-migrations            #    0,000 /sec                   
+               245      page-faults               #  503,212 /sec                     ( +-  0,13% )
+     1.880.918.706      cycles                    #    3,863 GHz                      ( +-  1,81% )  (82,93%)
+        38.785.924      stalled-cycles-frontend   #    1,98% frontend cycles idle     ( +-  7,86% )  (82,93%)
+       101.807.392      stalled-cycles-backend    #    5,19% backend cycles idle      ( +-  5,35% )  (83,38%)
+     4.484.804.894      instructions              #    2,29  insn per cycle         
+                                                  #    0,03  stalled cycles per insn  ( +-  0,56% )  (83,79%)
+     1.084.927.344      branches                  #    2,228 G/sec                    ( +-  0,56% )  (83,79%)
+        20.470.443      branch-misses             #    1,85% of all branches          ( +-  1,19% )  (83,18%)
+
+           0,48773 +- 0,00913 seconds time elapsed  ( +-  1,87% )
+

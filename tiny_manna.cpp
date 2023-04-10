@@ -21,9 +21,15 @@ Notar que si la densidad de granitos, [Suma_i h[i]/N] es muy baja, la actividad 
 #include <fstream>
 #include <iostream>
 #include <vector>
+#include <chrono>
+#include <numeric>
+#include <cstring>
+#include <random>
 
-typedef std::array<int, N> Manna_Array; // fixed-sized array
+std::minstd_rand generator;
 
+// IDEA OPT: Change to `unsigned` and use `short` instead of `int`
+typedef std::array<unsigned short, N> Manna_Array; // fixed-sized array
 
 // CONDICION INICIAL ---------------------------------------------------------------
 /*
@@ -33,7 +39,7 @@ lo mas aproximada (exacta cuando N->infinito) al numero real DENSITY, podemos ha
 static void inicializacion(Manna_Array& h)
 {
     for (int i = 0; i < N; ++i) {
-        h[i] = static_cast<int>((i + 1) * DENSITY) - static_cast<int>(i * DENSITY);
+        h[i] = static_cast<unsigned short>((i + 1) * DENSITY) - static_cast<unsigned short>(i * DENSITY);
     }
 }
 
@@ -88,13 +94,29 @@ static void desestabilizacion_inicial(Manna_Array& h)
     }
 }
 
+#ifdef PROFILE
+std::vector<unsigned int> time_recorder_p1, time_recorder_p2, time_recorder_p3;
+#endif
 
 // DESCARGA DE ACTIVOS Y UPDATE --------------------------------------------------------
-static unsigned int descargar(Manna_Array& h, Manna_Array& dh)
+static void descargar(Manna_Array& h, Manna_Array& dh)
 {
-    dh.fill(0);
+#ifdef PROFILE
+    auto start = std::chrono::high_resolution_clock::now();
+    // PARTE 1
+#endif
 
-    for (int i = 0; i < N; ++i) {
+    dh.fill(0); // IDEA OPT: Ineficiente?
+
+#ifdef PROFILE
+    auto end = std::chrono::high_resolution_clock::now();
+    time_recorder_p1.push_back(std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count());
+
+    start = std::chrono::high_resolution_clock::now();
+#endif
+    // PARTE 2
+    for (unsigned short i = 0; i < N; ++i) {
+
         // si es activo lo descargo aleatoriamente
         if (h[i] > 1) {
             for (int j = 0; j < h[i]; ++j) {
@@ -102,17 +124,24 @@ static unsigned int descargar(Manna_Array& h, Manna_Array& dh)
                 int k = (i + 2 * (rand() % 2) - 1 + N) % N;
                 ++dh[k];
             }
-            h[i] = 0;
         }
     }
 
-    unsigned int nroactivos = 0;
-    for (int i = 0; i < N; ++i) {
-        h[i] += dh[i];
-        nroactivos += (h[i] > 1);
-    }
+#ifdef PROFILE
+    end = std::chrono::high_resolution_clock::now();
+    time_recorder_p2.push_back(std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count());
 
-    return nroactivos;
+    start = std::chrono::high_resolution_clock::now();
+#endif
+    // PARTE 3
+    for (int i = 0; i < N; ++i) {
+        h[i] = dh[i] + ((h[i] == 1) ? 1 : 0);
+    }
+#ifdef PROFILE
+    end = std::chrono::high_resolution_clock::now();
+    time_recorder_p3.push_back(std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count());
+#endif
+
 }
 
 
@@ -145,8 +174,16 @@ int main()
     std::ofstream activity_out("activity.dat");
     int activity;
     int t = 0;
+    std::vector<unsigned int> time_recorder;
     do {
-        activity = descargar(h, dh);
+        activity = 0;
+        auto start = std::chrono::high_resolution_clock::now(); // Start measuring time
+        
+        descargar(h, dh);
+        
+        auto end = std::chrono::high_resolution_clock::now(); // Stop measuring time
+        time_recorder.push_back(std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count());
+        for(int i = 0; i < N; ++i) if (h[i] > 1) activity += 1;
         activity_out << activity << "\n";
 #ifdef DEBUG
         imprimir_array(h);
@@ -155,6 +192,20 @@ int main()
     } while (activity > 0 && t < NSTEPS); // si la actividad decae a cero, esto no evoluciona mas...
 
     std::cout << "LISTO: " << ((activity > 0) ? ("se acabo el tiempo\n") : ("la actividad decayo a cero\n")) << std::endl;
+    
+    int pt = std::accumulate(time_recorder.begin(), time_recorder.end(), 0) / time_recorder.size();
+    std::cout << "Tiempo promedio de ejecucion: " << pt << " ns" << std::endl;
+
+#ifdef PROFILE
+    int p1 = std::accumulate(time_recorder_p1.begin(), time_recorder_p1.end(), 0) / time_recorder_p1.size();
+    int p2 = std::accumulate(time_recorder_p2.begin(), time_recorder_p2.end(), 0) / time_recorder_p2.size();
+    int p3 = std::accumulate(time_recorder_p3.begin(), time_recorder_p3.end(), 0) / time_recorder_p3.size();
+
+    std::cout << "Tiempo promedio de ejecucion de la parte 1: " << p1 << " ns represents" << float(p1)/float(pt) << "%" << std::endl;
+    std::cout << "Tiempo promedio de ejecucion de la parte 2: " << p2 << " ns represents" << float(p2)/float(pt) << "%" << std::endl;
+    std::cout << "Tiempo promedio de ejecucion de la parte 3: " << p3 << " ns represents" << float(p3)/float(pt) << "%" << std::endl;
+#endif
+
 
     return 0;
 }

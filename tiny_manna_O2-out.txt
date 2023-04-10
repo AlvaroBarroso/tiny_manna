@@ -1,0 +1,40 @@
+estado inicial estable de la pila de arena...LISTO
+estado inicial desestabilizado de la pila de arena...LISTO
+evolucion de la pila de arena...LISTO: se acabo el tiempo
+
+Tiempo promedio de ejecucion: 76302 ns
+Tiempo promedio de ejecucion de la parte 1: 579 ns represents0.00758827%
+Tiempo promedio de ejecucion de la parte 2: 55510 ns represents0.727504%
+Tiempo promedio de ejecucion de la parte 3: 20113 ns represents0.263597%
+estado inicial estable de la pila de arena...LISTO
+estado inicial desestabilizado de la pila de arena...LISTO
+evolucion de la pila de arena...LISTO: se acabo el tiempo
+
+Tiempo promedio de ejecucion: 76299 ns
+Tiempo promedio de ejecucion de la parte 1: 564 ns represents0.00739197%
+Tiempo promedio de ejecucion de la parte 2: 55789 ns represents0.731189%
+Tiempo promedio de ejecucion de la parte 3: 19848 ns represents0.260134%
+estado inicial estable de la pila de arena...LISTO
+estado inicial desestabilizado de la pila de arena...LISTO
+evolucion de la pila de arena...LISTO: se acabo el tiempo
+
+Tiempo promedio de ejecucion: 77633 ns
+Tiempo promedio de ejecucion de la parte 1: 579 ns represents0.00745817%
+Tiempo promedio de ejecucion de la parte 2: 56583 ns represents0.728852%
+Tiempo promedio de ejecucion de la parte 3: 20369 ns represents0.262376%
+estado inicial estable de la pila de arena...LISTO
+estado inicial desestabilizado de la pila de arena...LISTO
+evolucion de la pila de arena...LISTO: se acabo el tiempo
+
+Tiempo promedio de ejecucion: 78575 ns
+Tiempo promedio de ejecucion de la parte 1: 560 ns represents0.00712695%
+Tiempo promedio de ejecucion de la parte 2: 58327 ns represents0.74231%
+Tiempo promedio de ejecucion de la parte 3: 19592 ns represents0.249341%
+estado inicial estable de la pila de arena...LISTO
+estado inicial desestabilizado de la pila de arena...LISTO
+evolucion de la pila de arena...LISTO: se acabo el tiempo
+
+Tiempo promedio de ejecucion: 75011 ns
+Tiempo promedio de ejecucion de la parte 1: 568 ns represents0.00757222%
+Tiempo promedio de ejecucion de la parte 2: 54685 ns represents0.729026%
+Tiempo promedio de ejecucion de la parte 3: 19663 ns represents0.262135%

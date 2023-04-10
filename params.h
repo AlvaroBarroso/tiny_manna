@@ -14,9 +14,13 @@
 
 // number of temporal steps
 #ifndef NSTEPS
-#define NSTEPS 1000000
+#define NSTEPS 8000
 #endif
 
 #ifndef SEED
 #define SEED time(nullptr)
+#endif
+
+#ifndef PROFILE
+#define PROFILE
 #endif
