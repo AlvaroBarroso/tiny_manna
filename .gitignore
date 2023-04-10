@@ -4,3 +4,4 @@ tiny_manna
 *.o
 .vscode
 tiny_manna_*
+!tiny_manna_*.cpp
