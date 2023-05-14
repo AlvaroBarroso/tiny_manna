@@ -77,7 +77,7 @@ static void desestabilizacion_inicial(Manna_Array& h)
     for (int i = 0; i < N; ++i) {
         if (h[i] == 1) {
             h[i] = 0;
-            int j = i + 2 * (rand() & 2) - 1; // izquierda o derecha
+            int j = i + 2 * (rand() & 1) - 1; // izquierda o derecha
 
             // corrijo por condiciones periodicas
             if (j == N) {
