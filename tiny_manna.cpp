@@ -25,6 +25,20 @@ Notar que si la densidad de granitos, [Suma_i h[i]/N] es muy baja, la actividad 
 #include <numeric>
 #include <cstring>
 #include <random>
+#include <immintrin.h>
+
+const uint32_t avx2_mask[8] = {1, 2, 4, 8, 16, 32, 64, 128};
+
+const __m256i avx2_shift[8] = {
+    _mm256_set_epi32(0, 0, 0, 0, 0, 0, 0, 1),
+    _mm256_set_epi32(0, 0, 0, 0, 0, 0, 1, 0),
+    _mm256_set_epi32(0, 0, 0, 0, 0, 1, 0, 0),
+    _mm256_set_epi32(0, 0, 0, 0, 1, 0, 0, 0),
+    _mm256_set_epi32(0, 0, 0, 1, 0, 0, 0, 0),
+    _mm256_set_epi32(0, 0, 1, 0, 0, 0, 0, 0),
+    _mm256_set_epi32(0, 1, 0, 0, 0, 0, 0, 0),
+    _mm256_set_epi32(1, 0, 0, 0, 0, 0, 0, 0)
+};
 
 std::minstd_rand generator;
 
@@ -119,11 +133,17 @@ static void descargar(Manna_Array& h, Manna_Array& dh)
 
         // si es activo lo descargo aleatoriamente
         if (h[i] > 1) {
-            for (int j = 0; j < h[i]; ++j) {
-                // sitio receptor a la izquierda o derecha teniendo en cuenta condiciones periodicas
-                int k = (i + 2 * (generator() & 1) - 1 + N) % N;
-                ++dh[k];
-            }
+            
+            const uint16_t randNum = generator();    
+            const uint16_t mask = (1 << h[i]) - 1;
+            const uint16_t maskedRandNum = randNum & mask;
+            
+            const unsigned short left = __builtin_popcount(maskedRandNum);
+            const unsigned short right = h[i] - left;
+            const unsigned short left_index = (i + N - 1) % N;
+            const unsigned short right_index = (i + 1) % N;
+            dh[left_index] += left;
+            dh[right_index] += right;
         }
     }
 
@@ -193,17 +213,17 @@ int main()
 
     std::cout << "LISTO: " << ((activity > 0) ? ("se acabo el tiempo\n") : ("la actividad decayo a cero\n")) << std::endl;
     
-    int pt = std::accumulate(time_recorder.begin(), time_recorder.end(), 0) / time_recorder.size();
+    unsigned int pt = std::accumulate(time_recorder.begin(), time_recorder.end(), 0) / time_recorder.size();
     std::cout << "Tiempo promedio de ejecucion: " << pt << " ns" << std::endl;
 
 #ifdef PROFILE
-    int p1 = std::accumulate(time_recorder_p1.begin(), time_recorder_p1.end(), 0) / time_recorder_p1.size();
-    int p2 = std::accumulate(time_recorder_p2.begin(), time_recorder_p2.end(), 0) / time_recorder_p2.size();
-    int p3 = std::accumulate(time_recorder_p3.begin(), time_recorder_p3.end(), 0) / time_recorder_p3.size();
+    unsigned int p1 = std::accumulate(time_recorder_p1.begin(), time_recorder_p1.end(), 0) / time_recorder_p1.size();
+    unsigned int p2 = std::accumulate(time_recorder_p2.begin(), time_recorder_p2.end(), 0) / time_recorder_p2.size();
+    unsigned int p3 = std::accumulate(time_recorder_p3.begin(), time_recorder_p3.end(), 0) / time_recorder_p3.size();
 
-    std::cout << "Tiempo promedio de ejecucion de la parte 1: " << p1 << " ns represents" << float(p1)/float(pt) << "%" << std::endl;
-    std::cout << "Tiempo promedio de ejecucion de la parte 2: " << p2 << " ns represents" << float(p2)/float(pt) << "%" << std::endl;
-    std::cout << "Tiempo promedio de ejecucion de la parte 3: " << p3 << " ns represents" << float(p3)/float(pt) << "%" << std::endl;
+    std::cout << "Tiempo promedio de ejecucion de la parte 1: " << p1 << " ns represents" << double(p1)/double(pt) << "%" << std::endl;
+    std::cout << "Tiempo promedio de ejecucion de la parte 2: " << p2 << " ns represents" << double(p2)/double(pt) << "%" << std::endl;
+    std::cout << "Tiempo promedio de ejecucion de la parte 3: " << p3 << " ns represents" << double(p3)/double(pt) << "%" << std::endl;
 #endif
 
 
