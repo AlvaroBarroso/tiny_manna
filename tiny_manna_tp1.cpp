@@ -183,6 +183,8 @@ int main()
         
         auto end = std::chrono::high_resolution_clock::now(); // Stop measuring time
         time_recorder.push_back(std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count());
+        // std::cout<<h[0]<<" "<<h[1]<<" "<<h[2]<<" "<<h[3]<<" "<<h[4]<<" "<<h[5]<<" "<<h[6]<<std::endl;
+
         for(int i = 0; i < N; ++i) if (h[i] > 1) activity += 1;
         activity_out << activity << "\n";
 #ifdef DEBUG

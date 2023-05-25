@@ -129,7 +129,6 @@ static void descargar(std::array<unsigned short, N>& h, std::array<unsigned shor
         activos.push_back(i);
     }
 
-    
     const size_t numberOfActivos = activos.size();
 
     std::vector<uint32_t> randoms(numberOfActivos);
@@ -260,6 +259,7 @@ int main()
         descargar(h, ldh, rdh);
 
         auto end = std::chrono::high_resolution_clock::now(); // Stop measuring time
+
         time_recorder.push_back(std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count());
         for(int i = 0; i < N; ++i) if (h[i] > 1) activity += 1;
         activity_out << activity << "\n";

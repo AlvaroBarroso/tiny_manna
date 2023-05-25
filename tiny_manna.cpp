@@ -267,69 +267,70 @@ static void descargar(std::array<unsigned short, N>& h, std::array<unsigned shor
     auto start = std::chrono::high_resolution_clock::now();
     // PARTE 1
 #endif
-for (int i = 0; i < N; i += 8) {
+// for (int i = 0; i < N; i += 8) {
 
-    // Load 8 values of h[i] into a 128-bit vector
-    __m128i hVec = _mm_loadu_si128((__m128i*)&h[i]);
+//     // Load 8 values of h[i] into a 128-bit vector
+//     __m128i hVec = _mm_loadu_si128((__m128i*)&h[i]);
 
-    // Compute CCmask for each value of h[i] and store in a 128-bit vector
-    __m128i AAmaskVec = _mm_sub_epi16(hVec, _mm_set1_epi16(1));
-    __m128i BBmaskVec = _mm_sub_epi16(_mm_slli_epi32(_mm_cvtepu16_epi32(hVec), 1), _mm_set1_epi16(1));
-    __m128i CCmaskVec = _mm_xor_si128(_mm_and_si128(AAmaskVec, BBmaskVec), BBmaskVec);
+//     // Compute CCmask for each value of h[i] and store in a 128-bit vector
+//     __m128i AAmaskVec = _mm_sub_epi16(hVec, _mm_set1_epi16(1));
+//     __m128i BBmaskVec = _mm_sub_epi16(_mm_slli_epi32(_mm_cvtepu16_epi32(hVec), 1), _mm_set1_epi16(1));
+//     __m128i CCmaskVec = _mm_xor_si128(_mm_and_si128(AAmaskVec, BBmaskVec), BBmaskVec);
 
-    // Generate 8 random numbers at once and mask them with CCmaskVec
+//     // Generate 8 random numbers at once and mask them with CCmaskVec
     
-    __m256i randNumVec = _mm256_set1_epi32(generator());
+//     __m256i randNumVec = _mm256_set1_epi32(generator());
 
-    // Broadcast the random numbers to all elements of a 256-bit vector
-    __m256i randNumBroadcastVec = _mm256_broadcastsi128_si256(_mm_castps_si128(_mm_broadcast_ss((const float*)(&randNumVec))));
+//     // Broadcast the random numbers to all elements of a 256-bit vector
+//     __m256i randNumBroadcastVec = _mm256_broadcastsi128_si256(_mm_castps_si128(_mm_broadcast_ss((const float*)(&randNumVec))));
 
-    __m256i maskedRandNumVec = _mm256_and_si256(randNumBroadcastVec, _mm256_cvtepi16_epi32(BBmaskVec));
+//     __m256i maskedRandNumVec = _mm256_and_si256(randNumBroadcastVec, _mm256_cvtepi16_epi32(BBmaskVec));
 
 
-    __m128i loDataVec = _mm256_extractf128_si256(maskedRandNumVec, 0);
-    __m128i hiDataVec = _mm256_extractf128_si256(maskedRandNumVec, 1);
-    uint64_t popcntLoVec1 = popcnt_AVX2_lookup(reinterpret_cast<const uint8_t*>(&loDataVec), 8);
-    uint64_t popcntHiVec1 = popcnt_AVX2_lookup(reinterpret_cast<const uint8_t*>(&hiDataVec), 8);
-    __m128i popcntLoVec = _mm_set1_epi64x(popcntLoVec1);
-    __m128i popcntHiVec = _mm_set1_epi64x(popcntHiVec1);
+//     __m128i loDataVec = _mm256_extractf128_si256(maskedRandNumVec, 0);
+//     __m128i hiDataVec = _mm256_extractf128_si256(maskedRandNumVec, 1);
+//     uint64_t popcntLoVec1 = popcnt_AVX2_lookup(reinterpret_cast<const uint8_t*>(&loDataVec), 8);
+//     uint64_t popcntHiVec1 = popcnt_AVX2_lookup(reinterpret_cast<const uint8_t*>(&hiDataVec), 8);
+//     __m128i popcntLoVec = _mm_set1_epi64x(popcntLoVec1);
+//     __m128i popcntHiVec = _mm_set1_epi64x(popcntHiVec1);
 
-    // Compute the left and right values using subtraction and bitwise NOT instructions
-    __m128i leftVec = _mm_sub_epi16(_mm_set1_epi16(8), popcntHiVec);
-    __m128i rightVec = _mm_sub_epi16(popcntLoVec, _mm_set1_epi16(8));
-    // __m128i rightVec = _mm_sub_epi16(hVec, leftVec); // ????
+//     // Compute the left and right values using subtraction and bitwise NOT instructions
+//     __m128i leftVec = _mm_sub_epi16(_mm_set1_epi16(8), popcntHiVec);
+//     __m128i rightVec = _mm_sub_epi16(popcntLoVec, _mm_set1_epi16(8));
+//     // __m128i rightVec = _mm_sub_epi16(hVec, leftVec); // ????
 
-    // uint16_t left[8], right[8];
-    // _mm_storeu_si128((__m128i*)left, leftVec);
-    // _mm_storeu_si128((__m128i*)right, rightVec);
-    _mm_storeu_si128(reinterpret_cast<__m128i*>(&ldh[i]), leftVec);
-    _mm_storeu_si128(reinterpret_cast<__m128i*>(&rdh[i]), rightVec);
+//     // uint16_t left[8], right[8];
+//     // _mm_storeu_si128((__m128i*)left, leftVec);
+//     // _mm_storeu_si128((__m128i*)right, rightVec);
+//     _mm_storeu_si128(reinterpret_cast<__m128i*>(&ldh[i]), leftVec);
+//     _mm_storeu_si128(reinterpret_cast<__m128i*>(&rdh[i]), rightVec);
 
-    // for (int j = 0; j < 8; j++) {
-    //     ldh[i+j] = left[j];
-    //     rdh[i+j] = right[j];
-    // }
-}
+//     // for (int j = 0; j < 8; j++) {
+//     //     ldh[i+j] = left[j];
+//     //     rdh[i+j] = right[j];
+//     // }
+// }
     // ORIGINAL:
-    // for (unsigned short i = 0; i < N; ++i) {
-    //     unsigned short arenas = h[i];
+    
+    for (unsigned short i = 0; i < N; ++i) {
+        unsigned short arenas = h[i];
 
-    //     const uint16_t randNum = generator();    
+        const uint16_t randNum = generator();    
 
-    //     // C = ((A - 1) & ((1 << B) - 1)) ^ ((1 << B) - 1);
-    //     // CC =(   AA   &        BB     ) ^        BB     ;
-    //     const uint16_t AAmask = arenas - 1;
-    //     const uint16_t BBmask = (1 << arenas) - 1;
-    //     const uint16_t CCmask = (AAmask & BBmask) ^ BBmask;
+        // C = ((A - 1) & ((1 << B) - 1)) ^ ((1 << B) - 1);
+        // CC =(   AA   &        BB     ) ^        BB     ;
+        const uint16_t AAmask = arenas - 1;
+        const uint16_t BBmask = (1 << arenas) - 1;
+        const uint16_t CCmask = (AAmask & BBmask) ^ BBmask;
 
-    //     const uint16_t maskedRandNum = randNum & CCmask;
+        const uint16_t maskedRandNum = randNum & CCmask;
 
-    //     const unsigned short left = __builtin_popcount(maskedRandNum);
-    //     const unsigned short right = arenas - left;
+        const unsigned short left = __builtin_popcount(maskedRandNum);
+        const unsigned short right = arenas - left;
 
-    //     ldh[i] = left;
-    //     rdh[i] = right;
-    // }
+        ldh[i] = left;
+        rdh[i] = right;
+    }
 
 #ifdef PROFILE
     auto end = std::chrono::high_resolution_clock::now();
