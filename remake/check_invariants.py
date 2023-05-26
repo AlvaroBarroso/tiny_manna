@@ -50,7 +50,7 @@ def check_binomial(pila):
     left_sum = sum([left for left, _ in data_points])
 
     test_results = binomtest(left_sum, n=total_sum, p=0.5, alternative='two-sided')
-    assert test_results.pvalue > 0.95, "Statistical test failed"
+    assert test_results.pvalue > 0.005, f"Statistical test failed with k={test_results.k} n={test_results.n} pvalue={test_results.pvalue}"
 
 # Check invariant: Bordes
 # The cells at the edges of the pila are connected to the cells at the opposite edge
@@ -74,8 +74,8 @@ def check_bordes(pila):
 # Check invariant: Conservacion!
 # Ver que cuando divide, no desaparecen granos ni se crean granos.
 def check_conservacion(pila):
-    sums = [sum(step) for step in pila]
-    assert len(set(sums)) == 1, "Conservation of sand failed"
+    set_sums = set(sum(step) for step in pila)
+    assert len(set_sums) == 1, f"Conservation of sand failed {set_sums}"
 
 print(f"Running invariant checkers... for {arg}")
 check_activos(pila)

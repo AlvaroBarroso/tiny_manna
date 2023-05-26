@@ -19,14 +19,22 @@ compile_and_run() {
     rm $filename.out $filename.out-$2.ii $filename.out-$2.o
 }
 
-compile_and_run_stat_test(){
-    echo "Running stat test mode"
+compile_and_run_with_checkers(){
+    echo "Running checker mode"
+    
     # First, we complice tiny_manna with the STAT_TEST flag without console output
-    g++ -O3 -DSTAT_TEST tiny_manna.cpp -o tiny_manna_stat_test.out > /dev/null 2>&1
-    # Then we run the python script that read from stat_test
+    echo "Compiling"
+
+    g++ -O3 -DSTAT_TEST -DN=1024 tiny_manna.cpp -o tiny_manna_stat_test.out 
+    
+    echo "Running tiny manna"
+    ./tiny_manna_stat_test.out
+    
+    echo "Running checker"
+    python ../check_invariants.py pilas.dat
 }
 
-compile_and_run_stat_test
+compile_and_run_with_checkers
 
 # compile_and_run "O1" $PROGRAM_NAME
 # compile_and_run "O2" $PROGRAM_NAME
