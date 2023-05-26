@@ -1,4 +1,5 @@
 import sys
+from scipy.stats import binomtest
 
 from helpers import load_and_parse
 
@@ -23,21 +24,62 @@ def check_activos(pila):
         for cell in range(len(pila[step]))[1:-1]:
             if pila[step][cell] > 1 and pila[step][cell - 1] <= 1  and pila[step][cell + 1] <= 1:
                 if pila[step + 1][cell] != 0:
-                    return False
+                    raise Exception("active -> inactive transition failed")
     return True
 
 # Check invariant: Statistic test binomial dist p=0.5
 def check_binomial(pila):
-    # TODO: implement
-    return True
+    data_points = []
+    for step in range(len(pila) - 1):
+        for cell in range(len(pila[step]))[2:-2]:
+            if (
+                pila[step][cell] > 1 and
+                pila[step][cell - 2] <= 1  and # Para que no interfieran
+                pila[step][cell + 2] <= 1
+            ):
+                reminder_left = 0 if pila[step][cell - 1] > 1 else pila[step][cell - 1]
+                reminder_right = 0 if pila[step][cell + 1] > 1 else pila[step][cell + 1]
+
+                left = pila[step + 1][cell - 1] - reminder_left
+                right = pila[step + 1][cell + 1] - reminder_right
+
+                assert(pila[step][cell] == left + right)
+                data_points.append((left, right))
+
+    total_sum = sum([left + right for left, right in data_points])
+    left_sum = sum([left for left, _ in data_points])
+
+    test_results = binomtest(left_sum, n=total_sum, p=0.5, alternative='two-sided')
+    assert test_results.pvalue > 0.95, "Statistical test failed"
 
 # Check invariant: Bordes
 # The cells at the edges of the pila are connected to the cells at the opposite edge
 def check_bordes(pila):
-    # TODO: implement
-    return True
+    # Left edge -> right edge
+    for step in range(len(pila) - 1):
+        if pila[step][0] > 1 and pila[step][len(pila[step]) - 2] <= 1 and pila[step][2] <= 1:
+            initial_amount = pila[step][0]
+            right_amount = pila[step + 1][1] - (0 if pila[step][1] > 1 else pila[step][1])
+            left_amount = pila[step + 1][len(pila[step]) - 1] - (0 if pila[step][len(pila[step]) - 1] > 1 else pila[step][len(pila[step]) - 1])
+            assert initial_amount == (right_amount + left_amount), f"left edge -> right edge transition failed at step {step}"
 
+    # Right edge -> left edge
+    for step in range(len(pila) - 1):
+        if pila[step][len(pila[step]) - 1] > 1 and pila[step][len(pila[step]) - 3] <= 1 and pila[step][1] <= 1:
+            initial_amount = pila[step][len(pila[step]) - 1]
+            right_amount = pila[step + 1][0] - (0 if pila[step][0] > 1 else pila[step][0])
+            left_amount = pila[step + 1][len(pila[step]) - 2] - (0 if pila[step][len(pila[step]) - 2] > 1 else pila[step][len(pila[step]) - 2])
+            assert initial_amount == (right_amount + left_amount), f"right edge -> left edge transition failed at step {step}"
 
-print(check_activos(pila))
-print(check_binomial(pila))
-print(check_bordes(pila))
+# Check invariant: Conservacion!
+# Ver que cuando divide, no desaparecen granos ni se crean granos.
+def check_conservacion(pila):
+    sums = [sum(step) for step in pila]
+    assert len(set(sums)) == 1, "Conservation of sand failed"
+
+print(f"Running invariant checkers... for {arg}")
+check_activos(pila)
+check_binomial(pila)
+check_bordes(pila)
+check_conservacion(pila)
+print("All invariant checkers passed!")

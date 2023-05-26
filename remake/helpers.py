@@ -7,8 +7,7 @@ def load_and_parse(arg):
 
     with open(file_path, 'r') as file:
         file_contents = file.read()
-    print(file_contents)
-    # if line is not empty
+
     return [
         [
             int(char)
