@@ -233,7 +233,7 @@ int main()
     std::cout << "Tiempo promedio de ejecucion de la parte 1: " << p1 << " ns\t represents\t" << float(int((double(p1)/pt)*100*100))/100 << "%" << std::endl;
     std::cout << "Tiempo promedio de ejecucion de la parte 2: " << p2 << " ns\t represents\t" << float(int((double(p2)/pt)*100*100))/100 << "%" << std::endl;
     std::cout << "Tiempo promedio de ejecucion de la parte 3: " << p3 << " ns\t represents\t" << float(int((double(p3)/pt)*100*100))/100 << "%" << std::endl;
-    std::cout << "Tiempo promedio de ejecucion de la parte 3: " << p4 << " ns\t represents\t" << float(int((double(p4)/pt)*100*100))/100 << "%" << std::endl;
+    std::cout << "Tiempo promedio de ejecucion de la parte 4: " << p4 << " ns\t represents\t" << float(int((double(p4)/pt)*100*100))/100 << "%" << std::endl;
 #endif
 
 
