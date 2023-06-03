@@ -121,12 +121,12 @@ static void descargar(Manna_Array& h, Manna_Array& dh)
     for (int i = 0; i < N; ++i) {
         // si es activo lo descargo aleatoriamente
         unsigned short h_i = h[i];
-        if (h_i > 1) {
-            unsigned short l = __builtin_popcount(generator() & ((1 << h_i) - 1));
+        if (h_i <= 1) continue;
+        
+        unsigned short l = __builtin_popcount(generator() & ((1 << h_i) - 1));
 
-            dh[((i + N) - 1) % N]   += l;
-            dh[(i + 1) % N]         += h_i - l;
-        }
+        dh[((i + N) - 1) % N]   += l;
+        dh[(i + 1) % N]         += h_i - l;
     }
 
 #ifdef PROFILE
