@@ -120,14 +120,12 @@ static void descargar(Manna_Array& h, Manna_Array& dh)
     // PARTE 2
     for (int i = 0; i < N; ++i) {
         // si es activo lo descargo aleatoriamente
-        if (h[i] > 1) {
-            for (int j = 0; j < h[i]; ++j) {
-                // sitio receptor a la izquierda o derecha teniendo en cuenta condiciones periodicas
-                // int l = __builtin_popcount(generator() & ((1 << h[i]) - 1));
-                int k = (i + 2 * (generator() & 1) - 1 + N) % N;
-                
-                ++dh[k];
-            }
+        unsigned short h_i = h[i];
+        if (h_i > 1) {
+            short int l = __builtin_popcount(generator() & ((1 << h_i) - 1));
+
+            dh[((i + N) - 1) % N]   += l;
+            dh[(i + 1) % N]         += h_i - l;
         }
     }
 
