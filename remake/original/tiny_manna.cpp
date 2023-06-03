@@ -26,6 +26,9 @@ Notar que si la densidad de granitos, [Suma_i h[i]/N] es muy baja, la actividad 
 #include <cstring>
 #include <random>
 
+#define ull unsigned long long
+#define ll long long
+
 std::minstd_rand generator;
 
 // IDEA OPT: Change to `unsigned` and use `short` instead of `int`
@@ -95,7 +98,7 @@ static void desestabilizacion_inicial(Manna_Array& h)
 }
 
 #ifdef PROFILE
-std::vector<unsigned int> time_recorder_p1, time_recorder_p2, time_recorder_p3;
+std::vector<ull> time_recorder_p1, time_recorder_p2, time_recorder_p3;
 #endif
 
 // DESCARGA DE ACTIVOS Y UPDATE --------------------------------------------------------
@@ -181,7 +184,7 @@ int main()
     std::ofstream activity_out("pilas.dat");
     int activity;
     int t = 0;
-    std::vector<unsigned int> time_recorder;
+    std::vector<ull> time_recorder;
     do {
         activity = 0;
         auto start = std::chrono::high_resolution_clock::now(); // Start measuring time
@@ -189,6 +192,7 @@ int main()
         descargar(h, dh);
         
         auto end = std::chrono::high_resolution_clock::now(); // Stop measuring time
+
         time_recorder.push_back(std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count());
         for(int i = 0; i < N; ++i) if (h[i] > 1) activity += 1;
 #ifdef STAT_TEST
@@ -199,17 +203,18 @@ int main()
 
     std::cout << "LISTO: " << ((activity > 0) ? ("se acabo el tiempo\n") : ("la actividad decayo a cero\n")) << std::endl;
     
-    int pt = std::accumulate(time_recorder.begin(), time_recorder.end(), 0) / time_recorder.size();
+
+    double pt = std::accumulate(time_recorder.begin(), time_recorder.end(), static_cast<ull>(0)) / time_recorder.size();
     std::cout << "Tiempo promedio de ejecucion: " << pt << " ns" << std::endl;
 
 #ifdef PROFILE
-    int p1 = std::accumulate(time_recorder_p1.begin(), time_recorder_p1.end(), 0) / time_recorder_p1.size();
-    int p2 = std::accumulate(time_recorder_p2.begin(), time_recorder_p2.end(), 0) / time_recorder_p2.size();
-    int p3 = std::accumulate(time_recorder_p3.begin(), time_recorder_p3.end(), 0) / time_recorder_p3.size();
+    ull p1 = std::accumulate(time_recorder_p1.begin(), time_recorder_p1.end(), static_cast<ull>(0)) / time_recorder_p1.size();
+    ull p2 = std::accumulate(time_recorder_p2.begin(), time_recorder_p2.end(), static_cast<ull>(0)) / time_recorder_p2.size();
+    ull p3 = std::accumulate(time_recorder_p3.begin(), time_recorder_p3.end(), static_cast<ull>(0)) / time_recorder_p3.size();
 
-    std::cout << "Tiempo promedio de ejecucion de la parte 1: " << p1 << " ns represents" << float(p1)/float(pt) << "%" << std::endl;
-    std::cout << "Tiempo promedio de ejecucion de la parte 2: " << p2 << " ns represents" << float(p2)/float(pt) << "%" << std::endl;
-    std::cout << "Tiempo promedio de ejecucion de la parte 3: " << p3 << " ns represents" << float(p3)/float(pt) << "%" << std::endl;
+    std::cout << "Tiempo promedio de ejecucion de la parte 1: " << p1 << " ns\t represents\t" << float(int((double(p1)/pt)*100*100))/100 << "%" << std::endl;
+    std::cout << "Tiempo promedio de ejecucion de la parte 2: " << p2 << " ns\t represents\t" << float(int((double(p2)/pt)*100*100))/100 << "%" << std::endl;
+    std::cout << "Tiempo promedio de ejecucion de la parte 3: " << p3 << " ns\t represents\t" << float(int((double(p3)/pt)*100*100))/100 << "%" << std::endl;
 #endif
 
 
