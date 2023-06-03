@@ -25,7 +25,7 @@ run_checkers(){
     # First, we complice tiny_manna with the STAT_TEST flag without console output
     echo "Step 1/3: Compiling"
 
-    g++ -O3 -DSTAT_TEST -DN=1024 tiny_manna.cpp -o tiny_manna_stat_test.out 
+    g++ -O3 -march=native -DSTAT_TEST -DNN=256 tiny_manna.cpp -o tiny_manna_stat_test.out 
     
     echo "Step 2/3: Running tiny manna"
     ./tiny_manna_stat_test.out > /dev/null 2>&1 
@@ -34,8 +34,29 @@ run_checkers(){
     python ../check_invariants.py pilas.dat
 }
 
+
+profile_descarga(){
+    echo "Running profile mode. 2 steps"
+    
+    echo "Step 1/2: Compiling"
+
+    g++ -O3 -march=native -DPROFILE -DNN=32768 tiny_manna.cpp -o tiny_manna_profile.out 
+    
+    echo "Step 2/2: Running tiny manna"
+    ./tiny_manna_profile.out
+
+}
+
+# TODO: hacer el que corre con perf stat
+
+
+# Descomentar para correr los checkers
 run_checkers
 
+# Descomentar para correr el profile
+profile_descarga
+
+# Esto de abajo es viejo
 # compile_and_run "O1" $PROGRAM_NAME
 # compile_and_run "O2" $PROGRAM_NAME
 # compile_and_run "O3" $PROGRAM_NAME

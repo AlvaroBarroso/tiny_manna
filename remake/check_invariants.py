@@ -24,7 +24,7 @@ def check_activos(pila):
         for cell in range(len(pila[step]))[1:-1]:
             if pila[step][cell] > 1 and pila[step][cell - 1] <= 1  and pila[step][cell + 1] <= 1:
                 if pila[step + 1][cell] != 0:
-                    raise Exception("active -> inactive transition failed")
+                    raise Exception(f"active -> inactive transition failed {step} {cell}")
     return True
 
 # Check invariant: Statistic test binomial dist p=0.5
