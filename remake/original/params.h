@@ -3,8 +3,8 @@
 #include <ctime>
 
 // number of sites
-#ifndef N
-#define N 32768
+#ifndef NN
+#define NN 32768
 #endif
 
 // number of sites

@@ -25,23 +25,26 @@ Notar que si la densidad de granitos, [Suma_i h[i]/N] es muy baja, la actividad 
 #include <numeric>
 #include <cstring>
 #include <random>
+# include "XoshiroCpp.hpp"
 
 #define ull unsigned long long
 #define ll long long
 
-std::minstd_rand generator;
+// std::minstd_rand generator;
+const std::uint64_t OTHER_SEED = 12345;
+XoshiroCpp::SplitMix64 generator(OTHER_SEED); // TODO: CHANGE TO 256 FOR SIMD
 
 // IDEA OPT: Change to `unsigned` and use `short` instead of `int`
-typedef std::array<unsigned short, N> Manna_Array; // fixed-sized array
+typedef std::array<unsigned short, NN> Manna_Array; // fixed-sized array
 
 // CONDICION INICIAL ---------------------------------------------------------------
 /*
 Para generar una condicion inicial suficientemente uniforme con una densidad
-lo mas aproximada (exacta cuando N->infinito) al numero real DENSITY, podemos hacer asi:
+lo mas aproximada (exacta cuando NN->infinito) al numero real DENSITY, podemos hacer asi:
 */
 static void inicializacion(Manna_Array& h)
 {
-    for (int i = 0; i < N; ++i) {
+    for (int i = 0; i < NN; ++i) {
         h[i] = static_cast<unsigned short>((i + 1) * DENSITY) - static_cast<unsigned short>(i * DENSITY);
     }
 }
@@ -54,7 +57,7 @@ static void imprimir_array(const Manna_Array& h)
     int nrogranitos_activos = 0;
 
     // esto dibuja los granitos en cada sitio y los cuenta
-    for (int i = 0; i < N; ++i) {
+    for (int i = 0; i < NN; ++i) {
         std::cout << h[i] << " ";
         nrogranitos += h[i];
         nrogranitos_activos += (h[i] > 1);
@@ -62,7 +65,7 @@ static void imprimir_array(const Manna_Array& h)
     std::cout << "\n";
     std::cout << "Hay " << nrogranitos << " granitos en total\n";
     std::cout << "De ellos " << nrogranitos_activos << " son activos\n";
-    std::cout << "La densidad obtenida es " << nrogranitos * 1.0 / N;
+    std::cout << "La densidad obtenida es " << nrogranitos * 1.0 / NN;
     std::cout << ", mientras que la deseada era " << DENSITY << "\n\n";
 }
 #endif
@@ -77,16 +80,16 @@ Una forma es agarrar cada granito, y tirarlo a su izquierda o derecha aleatoriam
 static void desestabilizacion_inicial(Manna_Array& h)
 {
     std::vector<int> index_a_incrementar;
-    for (int i = 0; i < N; ++i) {
+    for (int i = 0; i < NN; ++i) {
         if (h[i] == 1) {
             h[i] = 0;
             int j = i + 2 * (generator() & 1) - 1; // izquierda o derecha
 
             // corrijo por condiciones periodicas
-            if (j == N) {
+            if (j == NN) {
                 j = 0;
             } else if (j == -1) {
-                j = N - 1;
+                j = NN - 1;
             }
 
             index_a_incrementar.push_back(j);
@@ -118,15 +121,15 @@ static void descargar(Manna_Array& h, Manna_Array& dh)
     start = std::chrono::high_resolution_clock::now();
 #endif
     // PARTE 2
-    for (int i = 0; i < N; ++i) {
+    for (int i = 0; i < NN; ++i) {
         // si es activo lo descargo aleatoriamente
         unsigned short h_i = h[i];
         if (h_i <= 1) continue;
-        
+
         unsigned short l = __builtin_popcount(generator() & ((1 << h_i) - 1));
 
-        dh[((i + N) - 1) % N]   += l;
-        dh[(i + 1) % N]         += h_i - l;
+        dh[((i + NN) - 1) % NN]   += l;
+        dh[(i + 1) % NN]         += h_i - l;
     }
 
 #ifdef PROFILE
@@ -136,7 +139,7 @@ static void descargar(Manna_Array& h, Manna_Array& dh)
     start = std::chrono::high_resolution_clock::now();
 #endif
     // PARTE 3
-    for (int i = 0; i < N; ++i) {
+    for (int i = 0; i < NN; ++i) {
         h[i] = dh[i] + (h[i] == 1 ? 1 : 0);
     }
 #ifdef PROFILE
@@ -148,7 +151,7 @@ static void descargar(Manna_Array& h, Manna_Array& dh)
 //===================================================================
 #ifdef STAT_TEST
 void save_array(std::ofstream* activity_out, Manna_Array h){
-    for(int i = 0; i < N; ++i) *activity_out << h[i] << ",";
+    for(int i = 0; i < NN; ++i) *activity_out << h[i] << ",";
     *activity_out << "\n";
 }
 #endif
@@ -156,7 +159,6 @@ void save_array(std::ofstream* activity_out, Manna_Array h){
 //===================================================================
 int main()
 {
-    srand(SEED);
 
     // nro granitos en cada sitio, y su update
     Manna_Array h, dh;
@@ -191,7 +193,7 @@ int main()
         auto end = std::chrono::high_resolution_clock::now(); // Stop measuring time
 
         time_recorder.push_back(std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count());
-        for(int i = 0; i < N; ++i) if (h[i] > 1) activity += 1;
+        for(int i = 0; i < NN; ++i) if (h[i] > 1) activity += 1;
 #ifdef STAT_TEST
         save_array(&activity_out, h);
 #endif
