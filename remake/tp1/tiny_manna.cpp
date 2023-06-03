@@ -122,7 +122,7 @@ static void descargar(Manna_Array& h, Manna_Array& dh)
         // si es activo lo descargo aleatoriamente
         unsigned short h_i = h[i];
         if (h_i > 1) {
-            short int l = __builtin_popcount(generator() & ((1 << h_i) - 1));
+            unsigned short l = __builtin_popcount(generator() & ((1 << h_i) - 1));
 
             dh[((i + N) - 1) % N]   += l;
             dh[(i + 1) % N]         += h_i - l;
