@@ -80,7 +80,7 @@ static void desestabilizacion_inicial(Manna_Array& h)
     for (int i = 0; i < N; ++i) {
         if (h[i] == 1) {
             h[i] = 0;
-            int j = i + 2 * (rand() & 1) - 1; // izquierda o derecha
+            int j = i + 2 * (generator() & 1) - 1; // izquierda o derecha
 
             // corrijo por condiciones periodicas
             if (j == N) {
@@ -123,7 +123,8 @@ static void descargar(Manna_Array& h, Manna_Array& dh)
         if (h[i] > 1) {
             for (int j = 0; j < h[i]; ++j) {
                 // sitio receptor a la izquierda o derecha teniendo en cuenta condiciones periodicas
-                int k = (i + 2 * (rand() & 1) - 1 + N) % N;
+                // int l = __builtin_popcount(generator() & ((1 << h[i]) - 1));
+                int k = (i + 2 * (generator() & 1) - 1 + N) % N;
                 
                 ++dh[k];
             }
