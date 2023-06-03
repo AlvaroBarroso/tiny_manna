@@ -29,7 +29,8 @@ Notar que si la densidad de granitos, [Suma_i h[i]/N] es muy baja, la actividad 
 #include <numeric>
 #include <cstring>
 #include <random>
-# include "XoshiroCpp.hpp"
+#include <x86intrin.h>
+#include "XoshiroCpp.hpp"
 
 #define ull unsigned long long
 #define ll long long
@@ -129,8 +130,9 @@ static void descargar(Manna_Array& h, Manna_Array& lh, Manna_Array& rh)
         // si es activo lo descargo aleatoriamente
         unsigned short h_i = h[i];
         if (h_i <= 1) continue;
+        unsigned short rdy_popcnt = generator() & ((1 << h_i) - 1);
 
-        unsigned short l = __builtin_popcount(generator() & ((1 << h_i) - 1));
+        unsigned short l = __builtin_popcount(rdy_popcnt);
 
         lh[i] = l;
         rh[i] = h_i - l;
@@ -179,7 +181,7 @@ int main()
 {
 
     // nro granitos en cada sitio, y su update
-    Manna_Array h, lh, rh;
+    alignas(32) Manna_Array h, lh, rh;
 
     std::cout << "estado inicial estable de la pila de arena...";
     inicializacion(h);
