@@ -137,10 +137,8 @@ static void descargar(Manna_Array& h, Manna_Array& dh)
     start = std::chrono::high_resolution_clock::now();
 #endif
     // PARTE 3
-    unsigned int nroactivos = 0;
     for (int i = 0; i < N; ++i) {
         h[i] += dh[i];
-        nroactivos += (h[i] > 1);
     }
 #ifdef PROFILE
     end = std::chrono::high_resolution_clock::now();
