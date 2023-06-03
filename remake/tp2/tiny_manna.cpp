@@ -14,6 +14,10 @@ Notar que si la densidad de granitos, [Suma_i h[i]/N] es muy baja, la actividad 
 
 */
 
+#pragma GCC optimize("O3","unroll-loops","omit-frame-pointer","inline") //Optimization flags
+#pragma GCC option("arch=native","tune=native","no-zero-upper") //Enable AVX
+#pragma GCC target("avx")  //Enable AVX
+
 #include "params.h"
 
 #include <array>
@@ -101,18 +105,18 @@ static void desestabilizacion_inicial(Manna_Array& h)
 }
 
 #ifdef PROFILE
-std::vector<ull> time_recorder_p1, time_recorder_p2, time_recorder_p3;
+std::vector<ull> time_recorder_p1, time_recorder_p2, time_recorder_p3, time_recorder_p4;
 #endif
 
 // DESCARGA DE ACTIVOS Y UPDATE --------------------------------------------------------
-static void descargar(Manna_Array& h, Manna_Array& dh)
+static void descargar(Manna_Array& h, Manna_Array& lh, Manna_Array& rh)
 {
 #ifdef PROFILE
     auto start = std::chrono::high_resolution_clock::now();
-    // PARTE 1
 #endif
-
-    dh.fill(0); // IDEA OPT: Ineficiente?
+    // PARTE 1
+    lh.fill(0);
+    rh.fill(0);
 
 #ifdef PROFILE
     auto end = std::chrono::high_resolution_clock::now();
@@ -128,10 +132,9 @@ static void descargar(Manna_Array& h, Manna_Array& dh)
 
         unsigned short l = __builtin_popcount(generator() & ((1 << h_i) - 1));
 
-        dh[((i + NN) - 1) % NN]   += l;
-        dh[(i + 1) % NN]         += h_i - l;
+        lh[i] = l;
+        rh[i] = h_i - l;
     }
-
 #ifdef PROFILE
     end = std::chrono::high_resolution_clock::now();
     time_recorder_p2.push_back(std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count());
@@ -139,12 +142,27 @@ static void descargar(Manna_Array& h, Manna_Array& dh)
     start = std::chrono::high_resolution_clock::now();
 #endif
     // PARTE 3
-    for (int i = 0; i < NN; ++i) {
-        h[i] = dh[i] + (h[i] == 1 ? 1 : 0);
-    }
+    unsigned short last = rh[NN - 1];
+    std::memmove(rh.data() + 1, rh.data(), (NN - 1) * sizeof(unsigned short));
+    rh[0] = last;
+
+    unsigned short first = lh[0];
+    std::memmove(lh.data(), lh.data() + 1, (NN - 1) * sizeof(unsigned short));
+    lh[NN - 1] = first;
+    
 #ifdef PROFILE
     end = std::chrono::high_resolution_clock::now();
     time_recorder_p3.push_back(std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count());
+
+    start = std::chrono::high_resolution_clock::now();
+#endif
+
+    for (int i = 0; i < NN; ++i) {
+        h[i] = lh[i] + rh[i] + (h[i] == 1 ? 1 : 0);
+    }
+#ifdef PROFILE
+    end = std::chrono::high_resolution_clock::now();
+    time_recorder_p4.push_back(std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count());
 #endif
 }
 
@@ -161,7 +179,7 @@ int main()
 {
 
     // nro granitos en cada sitio, y su update
-    Manna_Array h, dh;
+    Manna_Array h, lh, rh;
 
     std::cout << "estado inicial estable de la pila de arena...";
     inicializacion(h);
@@ -188,7 +206,7 @@ int main()
         activity = 0;
         auto start = std::chrono::high_resolution_clock::now(); // Start measuring time
         
-        descargar(h, dh);
+        descargar(h, lh, rh);
         
         auto end = std::chrono::high_resolution_clock::now(); // Stop measuring time
 
@@ -210,10 +228,12 @@ int main()
     ull p1 = std::accumulate(time_recorder_p1.begin(), time_recorder_p1.end(), static_cast<ull>(0)) / time_recorder_p1.size();
     ull p2 = std::accumulate(time_recorder_p2.begin(), time_recorder_p2.end(), static_cast<ull>(0)) / time_recorder_p2.size();
     ull p3 = std::accumulate(time_recorder_p3.begin(), time_recorder_p3.end(), static_cast<ull>(0)) / time_recorder_p3.size();
+    ull p4 = std::accumulate(time_recorder_p4.begin(), time_recorder_p4.end(), static_cast<ull>(0)) / time_recorder_p4.size();
 
     std::cout << "Tiempo promedio de ejecucion de la parte 1: " << p1 << " ns\t represents\t" << float(int((double(p1)/pt)*100*100))/100 << "%" << std::endl;
     std::cout << "Tiempo promedio de ejecucion de la parte 2: " << p2 << " ns\t represents\t" << float(int((double(p2)/pt)*100*100))/100 << "%" << std::endl;
     std::cout << "Tiempo promedio de ejecucion de la parte 3: " << p3 << " ns\t represents\t" << float(int((double(p3)/pt)*100*100))/100 << "%" << std::endl;
+    std::cout << "Tiempo promedio de ejecucion de la parte 3: " << p4 << " ns\t represents\t" << float(int((double(p4)/pt)*100*100))/100 << "%" << std::endl;
 #endif
 
 
