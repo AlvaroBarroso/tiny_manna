@@ -19,22 +19,22 @@ compile_and_run() {
     rm $filename.out $filename.out-$2.ii $filename.out-$2.o
 }
 
-compile_and_run_with_checkers(){
-    echo "Running checker mode"
+run_checkers(){
+    echo "Running checker mode. 3 steps"
     
     # First, we complice tiny_manna with the STAT_TEST flag without console output
-    echo "Compiling"
+    echo "Step 1/3: Compiling"
 
     g++ -O3 -DSTAT_TEST -DN=1024 tiny_manna.cpp -o tiny_manna_stat_test.out 
     
-    echo "Running tiny manna"
-    ./tiny_manna_stat_test.out
+    echo "Step 2/3: Running tiny manna"
+    ./tiny_manna_stat_test.out > /dev/null 2>&1 
     
-    echo "Running checker"
+    echo "Step 3/3: Running checker"
     python ../check_invariants.py pilas.dat
 }
 
-compile_and_run_with_checkers
+run_checkers
 
 # compile_and_run "O1" $PROGRAM_NAME
 # compile_and_run "O2" $PROGRAM_NAME
