@@ -132,7 +132,7 @@ static void descargar(Manna_Array& h, Manna_Array& lh, Manna_Array& rh)
         if (h_i <= 1) continue;
         unsigned short rdy_popcnt = generator() & ((1 << h_i) - 1);
 
-        unsigned short l = __builtin_popcount(rdy_popcnt);
+        unsigned short l = _mm_popcnt_u32(rdy_popcnt);
 
         lh[i] = l;
         rh[i] = h_i - l;
