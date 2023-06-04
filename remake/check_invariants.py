@@ -24,7 +24,7 @@ def check_activos(pila):
         for cell in range(len(pila[step]))[1:-1]:
             if pila[step][cell] > 1 and pila[step][cell - 1] <= 1  and pila[step][cell + 1] <= 1:
                 if pila[step + 1][cell] != 0:
-                    raise Exception(f"active -> inactive transition failed {step} {cell}")
+                    raise Exception(f"active -> inactive transition failed {step} {cell} {pila[step][cell]}")
     return True
 
 # Check invariant: Statistic test binomial dist p=0.5
@@ -75,11 +75,11 @@ def check_bordes(pila):
 # Ver que cuando divide, no desaparecen granos ni se crean granos.
 def check_conservacion(pila):
     set_sums = set(sum(step) for step in pila)
-    assert len(set_sums) == 1, f"Conservation of sand failed {set_sums}"
+    assert len(set_sums) == 1, f"Conservation of sand failed: len(set_sums) = {len(set_sums)}"
 
 print(f"Running invariant checkers... for {arg}")
 check_activos(pila)
-check_binomial(pila)
 check_bordes(pila)
 check_conservacion(pila)
+check_binomial(pila)
 print("All invariant checkers passed!")

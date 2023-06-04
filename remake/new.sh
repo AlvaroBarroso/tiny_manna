@@ -25,7 +25,7 @@ run_checkers(){
     # First, we complice tiny_manna with the STAT_TEST flag without console output
     echo "Step 1/3: Compiling"
 
-    g++ -O3 -march=native -DSTAT_TEST -DNN=256 tiny_manna.cpp -o tiny_manna_stat_test.out 
+    g++ -O3 -march=native -fopt-info-vec-optimized -mavx2 -DSTAT_TEST -DNN=1024 tiny_manna.cpp -o tiny_manna_stat_test.out 
     
     echo "Step 2/3: Running tiny manna"
     ./tiny_manna_stat_test.out > /dev/null 2>&1 
@@ -40,7 +40,7 @@ profile_descarga(){
     
     echo "Step 1/2: Compiling"
 
-    g++ -O3 -march=native -DPROFILE -DNN=32768 tiny_manna.cpp -o tiny_manna_profile.out 
+    g++ -O3 -march=native -fopt-info-vec-optimized -mavx2 -DPROFILE -DNN=32768 tiny_manna.cpp -o tiny_manna_profile.out 
     
     echo "Step 2/2: Running tiny manna"
     ./tiny_manna_profile.out
