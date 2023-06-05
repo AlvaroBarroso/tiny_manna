@@ -14,30 +14,32 @@ Notar que si la densidad de granitos, [Suma_i h[i]/N] es muy baja, la actividad 
 
 */
 
-#pragma GCC optimize("O3","unroll-loops","omit-frame-pointer","inline") //Optimization flags
-#pragma GCC option("arch=native","tune=native","no-zero-upper") //Enable AVX
-#pragma GCC target("avx")  //Enable AVX
+// #pragma GCC optimize("O3","unroll-loops","omit-frame-pointer","inline") //Optimization flags
+// #pragma GCC option("arch=native","tune=native","no-zero-upper") //Enable AVX
+// #pragma GCC target("avx")  //Enable AVX
 
 #include "params.h"
 
 #include <array>
-#include <cstdlib>
+// #include <cstdlib>
 #include <fstream>
 #include <iostream>
-#include <vector>
+// #include <vector>
 #include <chrono>
-#include <numeric>
+// #include <numeric>
 #include <cstring>
 #include <random>
-#include <x86intrin.h>
-#include "XoshiroCpp.hpp"
+// #include <x86intrin.h>
+#include <omp.h>
+// #include "XoshiroCpp.hpp"
 
+// #define NUM_THREADS 4
 #define ull unsigned long long
 #define ll long long
 
-// std::minstd_rand generator;
-const std::uint64_t OTHER_SEED = 12345;
-XoshiroCpp::SplitMix64 generator(OTHER_SEED); // TODO: CHANGE TO 256 FOR SIMD
+std::minstd_rand generator;
+// const std::uint64_t OTHER_SEED = 12345;
+// XoshiroCpp::SplitMix64 generator(OTHER_SEED); // TODO: CHANGE TO 256 FOR SIMD
 
 // IDEA OPT: Change to `unsigned` and use `short` instead of `int`
 typedef std::array<unsigned short, NN> Manna_Array; // fixed-sized array
@@ -110,7 +112,7 @@ std::vector<ull> time_recorder_p1, time_recorder_p2, time_recorder_p3, time_reco
 #endif
 
 // DESCARGA DE ACTIVOS Y UPDATE --------------------------------------------------------
-static void descargar(Manna_Array& h, Manna_Array& lh, Manna_Array& rh)
+static void descargar(Manna_Array& h, Manna_Array& lh, Manna_Array& rh, int threads)
 {
 #ifdef PROFILE
     auto start = std::chrono::high_resolution_clock::now();
@@ -126,13 +128,24 @@ static void descargar(Manna_Array& h, Manna_Array& lh, Manna_Array& rh)
     start = std::chrono::high_resolution_clock::now();
 #endif
     // PARTE 2
-    for (int i = 0; i < NN; ++i) {
+    #pragma omp parallel for schedule(static)
+    for (int i = 0; i < NN; ++i){
+        // int tid = omp_get_thread_num();
+        // #pragma omp critical
+        // {
+        //     printf("The thread %d  executes i = %d\n", tid, i);
+        // }
+
         // si es activo lo descargo aleatoriamente
         unsigned short h_i = h[i];
-        if (h_i <= 1) continue;
-        unsigned short rdy_popcnt = generator() & ((1 << h_i) - 1);
+        if (__builtin_expect(h_i <= 1, 1)) continue;
 
-        unsigned short l = _mm_popcnt_u32(rdy_popcnt);
+        unsigned short l = static_cast<unsigned short>(__builtin_popcount(generator() & ((1 << h_i) - 1)));
+        // unsigned short l = 0;
+        // #pragma omp parallel for reduction(+:l)
+        // for(int j = 0; j < h_i; ++j){
+        //     l += generator() & 1;
+        // }
 
         lh[i] = l;
         rh[i] = h_i - l;
@@ -181,7 +194,7 @@ int main()
 {
 
     // nro granitos en cada sitio, y su update
-    alignas(32) Manna_Array h, lh, rh;
+    alignas(64) Manna_Array h, lh, rh;
 
     std::cout << "estado inicial estable de la pila de arena...";
     inicializacion(h);
@@ -204,11 +217,17 @@ int main()
     int activity;
     int t = 0;
     std::vector<ull> time_recorder;
+    // Print amount of threads omp
+    int threads = omp_get_max_threads();
+    // omp_set_num_threads(NUM_THREADS);
+    std::cout << std::endl << "omp_get_max_threads() = " << threads << std::endl;
+    // Assert threads is a power of 2
+    // assert((threads & (threads - 1)) == 0);
     do {
         activity = 0;
         auto start = std::chrono::high_resolution_clock::now(); // Start measuring time
         
-        descargar(h, lh, rh);
+        descargar(h, lh, rh, threads);
         
         auto end = std::chrono::high_resolution_clock::now(); // Stop measuring time
 

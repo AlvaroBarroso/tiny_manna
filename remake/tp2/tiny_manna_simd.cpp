@@ -31,6 +31,7 @@ Notar que si la densidad de granitos, [Suma_i h[i]/N] es muy baja, la actividad 
 #include <random>
 #include <x86intrin.h>
 #include <nmmintrin.h>
+#include <omp.h>
 #include "XoshiroCpp.hpp"
 
 #define ull unsigned long long
@@ -150,6 +151,7 @@ static void descargar(Manna_Array& h, Manna_Array& lh, Manna_Array& rh)
 
     istart = std::chrono::high_resolution_clock::now();
 #endif
+    #pragma omp parallel for shared(h,lh,rh)
     for (int i = 0; i < NN; i+=8) {
         // si es activo lo descargo aleatoriamente
         // unsigned short h_i = h[i];

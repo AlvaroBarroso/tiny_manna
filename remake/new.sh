@@ -1,7 +1,7 @@
 REPETITIONS=5
 PROGRAM_NAME="tiny_manna"
 ORIGINAL_PROGRAM_NAME="tiny_manna_original"
-
+OMP_NUM_THREADS=8
 
 # compile_and_run takes one argument, which is the optimization level, complies the code, runs it 5 times and saves the perf stat output to a file.
 compile_and_run() {
@@ -25,36 +25,66 @@ run_checkers(){
     # First, we complice tiny_manna with the STAT_TEST flag without console output
     echo "Step 1/3: Compiling"
 
-    g++ -O3 -march=native -fopt-info-vec-optimized -mavx2 -DSTAT_TEST -DNN=1024 tiny_manna.cpp -o tiny_manna_stat_test.out 
+    g++ -O3 -march=native -fopt-info-vec-optimized -fopenmp -mavx2 -DSTAT_TEST -DNN=1024 tiny_manna.cpp -o tiny_manna_stat_test.out 
     
     echo "Step 2/3: Running tiny manna"
-    ./tiny_manna_stat_test.out > /dev/null 2>&1 
+    OMP_NUM_THREADS=$OMP_NUM_THREADS ./tiny_manna_stat_test.out #> /dev/null 2>&1 
     
     echo "Step 3/3: Running checker"
     python ../check_invariants.py pilas.dat
 }
 
 
+profile_detalle_descarga(){
+    echo "Running DETALLE profile mode. 2 steps"
+    
+    echo "Step 1/2: Compiling"
+
+    g++ -O3 -march=native -fopt-info-vec-optimized -fopenmp -mavx2 -DPROFILE -DNN=32768 tiny_manna.cpp -o tiny_manna_profile.out 
+    
+    echo "Step 2/2: Running tiny manna"
+    OMP_NUM_THREADS=$OMP_NUM_THREADS ./tiny_manna_profile.out
+
+}
+
 profile_descarga(){
     echo "Running profile mode. 2 steps"
     
     echo "Step 1/2: Compiling"
 
-    g++ -O3 -march=native -fopt-info-vec-optimized -mavx2 -DPROFILE -DNN=32768 tiny_manna.cpp -o tiny_manna_profile.out 
+    clang++ -O3 -march=native -fopenmp -mavx2 -DNN=32768 tiny_manna.cpp -o tiny_manna_profile.out 
     
     echo "Step 2/2: Running tiny manna"
-    ./tiny_manna_profile.out
+    # OMP_NUM_THREADS=$OMP_NUM_THREADS ./tiny_manna_profile.out
+    OMP_NUM_THREADS=$OMP_NUM_THREADS perf stat -r 1 ./tiny_manna_profile.out
 
 }
+
+profile_descarga_simd(){
+    echo "Running SIMD profile mode. 2 steps"
+    
+    echo "Step 1/2: Compiling"
+
+    g++ -O3 -march=native -fopt-info-vec-optimized -fopenmp -mavx2 -DNN=32768 tiny_manna_simd.cpp -o tiny_manna_profile_simd.out 
+    
+    echo "Step 2/2: Running tiny manna"
+    # OMP_NUM_THREADS=$OMP_NUM_THREADS ./tiny_manna_profile_simd.out
+    OMP_NUM_THREADS=$OMP_NUM_THREADS perf stat -r 5 ./tiny_manna_profile_simd.out
+}
+
 
 # TODO: hacer el que corre con perf stat
 
 
 # Descomentar para correr los checkers
-run_checkers
+# run_checkers
 
-# Descomentar para correr el profile
+# Descomentar para correr el profile CON DETALLE
+# profile_detalle_descarga
+# 
 profile_descarga
+
+# profile_descarga_simd
 
 # Esto de abajo es viejo
 # compile_and_run "O1" $PROGRAM_NAME
