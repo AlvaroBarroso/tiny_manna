@@ -31,15 +31,15 @@ Notar que si la densidad de granitos, [Suma_i h[i]/N] es muy baja, la actividad 
 #include <random>
 // #include <x86intrin.h>
 #include <omp.h>
-// #include "XoshiroCpp.hpp"
+#include "XoshiroCpp.hpp"
 
 // #define NUM_THREADS 4
 #define ull unsigned long long
 #define ll long long
 
-std::minstd_rand generator;
-// const std::uint64_t OTHER_SEED = 12345;
-// XoshiroCpp::SplitMix64 generator(OTHER_SEED); // TODO: CHANGE TO 256 FOR SIMD
+// std::minstd_rand generator;
+const std::uint64_t OTHER_SEED = 12345;
+XoshiroCpp::SplitMix64 initial_generator(OTHER_SEED); // TODO: CHANGE TO 256 FOR SIMD
 
 // IDEA OPT: Change to `unsigned` and use `short` instead of `int`
 typedef std::array<unsigned short, NN> Manna_Array; // fixed-sized array
@@ -90,7 +90,7 @@ static void desestabilizacion_inicial(Manna_Array& h)
     for (int i = 0; i < NN; ++i) {
         if (h[i] == 1) {
             h[i] = 0;
-            int j = i + 2 * (generator() & 1) - 1; // izquierda o derecha
+            int j = i + 2 * (initial_generator() & 1) - 1; // izquierda o derecha
 
             // corrijo por condiciones periodicas
             if (j == NN) {
@@ -112,14 +112,13 @@ std::vector<ull> time_recorder_p1, time_recorder_p2, time_recorder_p3, time_reco
 #endif
 
 // DESCARGA DE ACTIVOS Y UPDATE --------------------------------------------------------
-static void descargar(Manna_Array& h, Manna_Array& lh, Manna_Array& rh, int threads)
+static void descargar(Manna_Array& h, Manna_Array& dh, Manna_Array& rh)
 {
 #ifdef PROFILE
     auto start = std::chrono::high_resolution_clock::now();
 #endif
     // PARTE 1
-    lh.fill(0);
-    rh.fill(0);
+    dh.fill(0);
 
 #ifdef PROFILE
     auto end = std::chrono::high_resolution_clock::now();
@@ -128,27 +127,18 @@ static void descargar(Manna_Array& h, Manna_Array& lh, Manna_Array& rh, int thre
     start = std::chrono::high_resolution_clock::now();
 #endif
     // PARTE 2
-    #pragma omp parallel for schedule(static)
+    unsigned short lindex, rindex, lh_i, h_i, rh_i, l, r;
+    #pragma omp parallel for schedule(static) private(lindex, rindex, lh_i, h_i, rh_i, l, r) shared(h, dh, rh)
     for (int i = 0; i < NN; ++i){
-        // int tid = omp_get_thread_num();
-        // #pragma omp critical
-        // {
-        //     printf("The thread %d  executes i = %d\n", tid, i);
-        // }
+        lindex = (i + NN - 1) % NN;
+        rindex = (i + 1)      % NN;
 
-        // si es activo lo descargo aleatoriamente
-        unsigned short h_i = h[i];
-        if (__builtin_expect(h_i <= 1, 1)) continue;
+        lh_i = h[lindex], h_i = h[i], rh_i = h[rindex];
 
-        unsigned short l = static_cast<unsigned short>(__builtin_popcount(generator() & ((1 << h_i) - 1)));
-        // unsigned short l = 0;
-        // #pragma omp parallel for reduction(+:l)
-        // for(int j = 0; j < h_i; ++j){
-        //     l += generator() & 1;
-        // }
-
-        lh[i] = l;
-        rh[i] = h_i - l;
+        l = lh_i <= 1 ? 0 :        __builtin_popcount(rh[lindex] & ((1 << lh_i) - 1));
+        r = rh_i <= 1 ? 0 : rh_i - __builtin_popcount(rh[rindex] & ((1 << rh_i) - 1));
+ 
+        dh[i] = (h_i == 1 ? 1 : 0) + l + r ;
     }
 #ifdef PROFILE
     end = std::chrono::high_resolution_clock::now();
@@ -157,13 +147,13 @@ static void descargar(Manna_Array& h, Manna_Array& lh, Manna_Array& rh, int thre
     start = std::chrono::high_resolution_clock::now();
 #endif
     // PARTE 3
-    unsigned short last = rh[NN - 1];
-    std::memmove(rh.data() + 1, rh.data(), (NN - 1) * sizeof(unsigned short));
-    rh[0] = last;
+    // unsigned short last = rh[NN - 1];
+    // std::memmove(rh.data() + 1, rh.data(), (NN - 1) * sizeof(unsigned short));
+    // rh[0] = last;
 
-    unsigned short first = lh[0];
-    std::memmove(lh.data(), lh.data() + 1, (NN - 1) * sizeof(unsigned short));
-    lh[NN - 1] = first;
+    // unsigned short first = dh[0];
+    // std::memmove(dh.data(), dh.data() + 1, (NN - 1) * sizeof(unsigned short));
+    // dh[NN - 1] = first;
     
 #ifdef PROFILE
     end = std::chrono::high_resolution_clock::now();
@@ -172,9 +162,9 @@ static void descargar(Manna_Array& h, Manna_Array& lh, Manna_Array& rh, int thre
     start = std::chrono::high_resolution_clock::now();
 #endif
 
-    for (int i = 0; i < NN; ++i) {
-        h[i] = lh[i] + rh[i] + (h[i] == 1 ? 1 : 0);
-    }
+    // for (int i = 0; i < NN; ++i) {
+    //     h[i] = dh[i] + rh[i] + (h[i] == 1 ? 1 : 0);
+    // }
 #ifdef PROFILE
     end = std::chrono::high_resolution_clock::now();
     time_recorder_p4.push_back(std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count());
@@ -194,7 +184,10 @@ int main()
 {
 
     // nro granitos en cada sitio, y su update
-    alignas(64) Manna_Array h, lh, rh;
+    alignas(64) Manna_Array h, dh, rh, *ph, *pdh, *prh, *ptmp;
+    ph = &h;
+    pdh = &dh;
+    prh = &rh;
 
     std::cout << "estado inicial estable de la pila de arena...";
     inicializacion(h);
@@ -219,22 +212,39 @@ int main()
     std::vector<ull> time_recorder;
     // Print amount of threads omp
     int threads = omp_get_max_threads();
+    // XoshiroCpp::SplitMix64* generators;
+    // for (int i = 0; i < threads; ++i) generators[i] = XoshiroCpp::SplitMix64(initial_generator());
+
+    // # pragma omp parallel for schedule(static) shared(rh)
+    for (int i = 0; i < NN; ++i) rh[i] = initial_generator(); //generators[omp_get_thread_num()]();
+
     // omp_set_num_threads(NUM_THREADS);
     std::cout << std::endl << "omp_get_max_threads() = " << threads << std::endl;
     // Assert threads is a power of 2
     // assert((threads & (threads - 1)) == 0);
     do {
         activity = 0;
+        // TODO: Maybe pragma?
+        // #pragma omp parallel for schedule(static)
+        if (t % 2 == 0) {
+            ph = &h;
+            pdh = &dh;
+            prh = &rh;
+        } else {
+            ph = &dh;
+            pdh = &h;
+            prh = &rh;
+        }
         auto start = std::chrono::high_resolution_clock::now(); // Start measuring time
         
-        descargar(h, lh, rh, threads);
+        descargar(*ph, *pdh, *prh);
         
         auto end = std::chrono::high_resolution_clock::now(); // Stop measuring time
 
         time_recorder.push_back(std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count());
-        for(int i = 0; i < NN; ++i) if (h[i] > 1) activity += 1;
+        for(int i = 0; i < NN; ++i) if ((*ph)[i] > 1) activity += 1;
 #ifdef STAT_TEST
-        save_array(&activity_out, h);
+        save_array(&activity_out, *ph);
 #endif
         ++t;
     } while (activity > 0 && t < NSTEPS); // si la actividad decae a cero, esto no evoluciona mas...
