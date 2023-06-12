@@ -1,7 +1,7 @@
 REPETITIONS=5
 PROGRAM_NAME="tiny_manna"
 ORIGINAL_PROGRAM_NAME="tiny_manna_original"
-OMP_NUM_THREADS=8
+OMP_NUM_THREADS=1
 
 # compile_and_run takes one argument, which is the optimization level, complies the code, runs it 5 times and saves the perf stat output to a file.
 compile_and_run() {
@@ -25,13 +25,29 @@ run_checkers(){
     # First, we complice tiny_manna with the STAT_TEST flag without console output
     echo "Step 1/3: Compiling"
 
-    g++ -O3 -march=native -fopt-info-vec-optimized -fopenmp -mavx2 -DSTAT_TEST -DNN=1024 tiny_manna.cpp -o tiny_manna_stat_test.out 
+    g++ -O3 -march=native -fopt-info-vec-optimized -fopenmp -mavx2 -DSTAT_TEST -DNN=128 tiny_manna.cpp -o tiny_manna_stat_test.out 
     
     echo "Step 2/3: Running tiny manna"
-    OMP_NUM_THREADS=$OMP_NUM_THREADS ./tiny_manna_stat_test.out #> /dev/null 2>&1 
+
+    OMP_PROC_BIND=true OMP_NUM_THREADS=$OMP_NUM_THREADS ./tiny_manna_stat_test.out #> /dev/null 2>&1 
     
-    echo "Step 3/3: Running checker"
+    # echo "Step 3/3: Running checker"
     python ../check_invariants.py pilas.dat
+}
+
+
+run_valgrind(){
+    echo "Running valgrind mode. 3 steps"
+    
+    echo "Step 1/2: Compiling"
+    g++ -O0 -march=native -g -fopt-info-vec-optimized -fopenmp -mavx2 -DNN=128 tiny_manna.cpp -o tiny_manna_stat_test.out 
+    echo "Step 2/2: Running tiny manna"
+    OMP_PROC_BIND=true OMP_NUM_THREADS=$OMP_NUM_THREADS valgrind --leak-check=full \
+         --show-leak-kinds=all \
+         --track-origins=yes \
+         --verbose \
+         --log-file=valgrind-out.txt \
+         ./tiny_manna_stat_test.out #> /dev/null 2>&1 
 }
 
 
@@ -40,10 +56,10 @@ profile_detalle_descarga(){
     
     echo "Step 1/2: Compiling"
 
-    g++ -O3 -march=native -fopt-info-vec-optimized -fopenmp -mavx2 -DPROFILE -DNN=32768 tiny_manna.cpp -o tiny_manna_profile.out 
+    g++ -O3 -march=native -fopt-info-vec-optimized -fopenmp -mavx2 -DPROFILE -DNN=131072 tiny_manna.cpp -o tiny_manna_profile.out 
     
     echo "Step 2/2: Running tiny manna"
-    OMP_NUM_THREADS=$OMP_NUM_THREADS ./tiny_manna_profile.out
+    OMP_PROC_BIND=true OMP_NUM_THREADS=$OMP_NUM_THREADS ./tiny_manna_profile.out
 
 }
 
@@ -52,11 +68,11 @@ profile_descarga(){
     
     echo "Step 1/2: Compiling"
 
-    clang++ -O3 -march=native -fopenmp -mavx2 -DNN=32768 tiny_manna.cpp -o tiny_manna_profile.out 
+    g++ -O3 -march=native -fopenmp -mavx2 -DNN=131072 tiny_manna.cpp -o tiny_manna_profile.out 
     
     echo "Step 2/2: Running tiny manna"
     # OMP_NUM_THREADS=$OMP_NUM_THREADS ./tiny_manna_profile.out
-    OMP_NUM_THREADS=$OMP_NUM_THREADS perf stat -r 1 ./tiny_manna_profile.out
+    OMP_PROC_BIND=true OMP_NUM_THREADS=$OMP_NUM_THREADS perf stat -r 1 ./tiny_manna_profile.out
 
 }
 

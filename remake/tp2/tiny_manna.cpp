@@ -21,6 +21,7 @@ Notar que si la densidad de granitos, [Suma_i h[i]/N] es muy baja, la actividad 
 #include "params.h"
 
 #include <array>
+// #include <cstdio>
 // #include <cstdlib>
 #include <fstream>
 #include <iostream>
@@ -38,11 +39,46 @@ Notar que si la densidad de granitos, [Suma_i h[i]/N] es muy baja, la actividad 
 #define ll long long
 
 // std::minstd_rand generator;
-const std::uint64_t OTHER_SEED = 12345;
+const std::uint64_t OTHER_SEED = 123456;
 XoshiroCpp::SplitMix64 initial_generator(OTHER_SEED); // TODO: CHANGE TO 256 FOR SIMD
 
 // IDEA OPT: Change to `unsigned` and use `short` instead of `int`
 typedef std::array<unsigned short, NN> Manna_Array; // fixed-sized array
+typedef unsigned short* Small_Manna_Array;
+
+class UnboundedMannaProblem {
+private:
+public:
+    Small_Manna_Array h, dh;
+    XoshiroCpp::SplitMix64 generator;
+    unsigned short spill_left, spill_right;
+    int size;
+
+    // Constructor
+    UnboundedMannaProblem(int ssize)
+    :spill_left(0), spill_right(0), generator(initial_generator()), size(ssize){
+        try {
+            h = new unsigned short[ssize];
+            dh = new unsigned short[ssize];
+        } catch (const std::bad_alloc&) {
+            throw std::runtime_error("Failed to allocate memory");
+        }
+    }
+
+    // Swap ph y pdh
+    void Swap() {
+        Small_Manna_Array tmp;
+        tmp = h;
+        h = dh;
+        dh = tmp;
+    }
+    ~UnboundedMannaProblem() {
+        delete[] h;
+        delete[] dh;
+    }
+    
+};
+
 
 // CONDICION INICIAL ---------------------------------------------------------------
 /*
@@ -55,28 +91,6 @@ static void inicializacion(Manna_Array& h)
         h[i] = static_cast<unsigned short>((i + 1) * DENSITY) - static_cast<unsigned short>(i * DENSITY);
     }
 }
-
-
-#ifdef DEBUG
-static void imprimir_array(const Manna_Array& h)
-{
-    int nrogranitos = 0;
-    int nrogranitos_activos = 0;
-
-    // esto dibuja los granitos en cada sitio y los cuenta
-    for (int i = 0; i < NN; ++i) {
-        std::cout << h[i] << " ";
-        nrogranitos += h[i];
-        nrogranitos_activos += (h[i] > 1);
-    }
-    std::cout << "\n";
-    std::cout << "Hay " << nrogranitos << " granitos en total\n";
-    std::cout << "De ellos " << nrogranitos_activos << " son activos\n";
-    std::cout << "La densidad obtenida es " << nrogranitos * 1.0 / NN;
-    std::cout << ", mientras que la deseada era " << DENSITY << "\n\n";
-}
-#endif
-
 
 // CONDICION INICIAL ---------------------------------------------------------------
 /*
@@ -112,13 +126,17 @@ std::vector<ull> time_recorder_p1, time_recorder_p2, time_recorder_p3, time_reco
 #endif
 
 // DESCARGA DE ACTIVOS Y UPDATE --------------------------------------------------------
-static void descargar(Manna_Array& h, Manna_Array& dh, Manna_Array& rh)
+static void descargar(UnboundedMannaProblem* ump)
 {
 #ifdef PROFILE
     auto start = std::chrono::high_resolution_clock::now();
 #endif
     // PARTE 1
-    dh.fill(0);
+    Small_Manna_Array& h = ump->h;
+    Small_Manna_Array& dh = ump->dh;
+    // std::cout<<"aa"<<std::endl;
+    std::fill_n(dh, ump->size, 0);
+    // std::cout<<"bb"<<std::endl;
 
 #ifdef PROFILE
     auto end = std::chrono::high_resolution_clock::now();
@@ -126,55 +144,76 @@ static void descargar(Manna_Array& h, Manna_Array& dh, Manna_Array& rh)
 
     start = std::chrono::high_resolution_clock::now();
 #endif
-    // PARTE 2
-    unsigned short lindex, rindex, lh_i, h_i, rh_i, l, r;
-    #pragma omp parallel for schedule(static) private(lindex, rindex, lh_i, h_i, rh_i, l, r) shared(h, dh, rh)
-    for (int i = 0; i < NN; ++i){
-        lindex = (i + NN - 1) % NN;
-        rindex = (i + 1)      % NN;
-
-        lh_i = h[lindex], h_i = h[i], rh_i = h[rindex];
-
-        l = lh_i <= 1 ? 0 :        __builtin_popcount(rh[lindex] & ((1 << lh_i) - 1));
-        r = rh_i <= 1 ? 0 : rh_i - __builtin_popcount(rh[rindex] & ((1 << rh_i) - 1));
- 
-        dh[i] = (h_i == 1 ? 1 : 0) + l + r ;
-    }
-#ifdef PROFILE
-    end = std::chrono::high_resolution_clock::now();
-    time_recorder_p2.push_back(std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count());
-
-    start = std::chrono::high_resolution_clock::now();
-#endif
-    // PARTE 3
-    // unsigned short last = rh[NN - 1];
-    // std::memmove(rh.data() + 1, rh.data(), (NN - 1) * sizeof(unsigned short));
-    // rh[0] = last;
-
-    // unsigned short first = dh[0];
-    // std::memmove(dh.data(), dh.data() + 1, (NN - 1) * sizeof(unsigned short));
-    // dh[NN - 1] = first;
+    unsigned short spill_left, spill_right;
+    unsigned short prev_right;
+    unsigned short curr_left, curr_reminder ,curr_right;
+    unsigned short next_left, next_reminder ,next_right;
+    XoshiroCpp::SplitMix64 g = ump->generator;
     
-#ifdef PROFILE
-    end = std::chrono::high_resolution_clock::now();
-    time_recorder_p3.push_back(std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count());
+    prev_right = 0;
+    if (h[0] <= 1) {
+        curr_left = 0;
+        curr_reminder = h[0];
+        curr_right = 0;
+    } else {
+        curr_left = __builtin_popcount(g() & ((1 << h[0]) - 1));
+        curr_reminder = 0;
+        curr_right = h[0] - curr_left;
+    }
 
-    start = std::chrono::high_resolution_clock::now();
-#endif
+    if (h[1] <= 1) {
+        next_left = 0;
+        next_reminder = h[1];
+        next_right = 0;
+    } else {
+        next_left = __builtin_popcount(g() & ((1 << h[1]) - 1));
+        next_reminder = 0;
+        next_right = h[1] - next_left;
+    }
 
-    // for (int i = 0; i < NN; ++i) {
-    //     h[i] = dh[i] + rh[i] + (h[i] == 1 ? 1 : 0);
-    // }
-#ifdef PROFILE
-    end = std::chrono::high_resolution_clock::now();
-    time_recorder_p4.push_back(std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count());
-#endif
+    dh[0] = curr_reminder + next_left; // No prev right
+    spill_left = curr_left;
+
+    prev_right = curr_right;
+
+    curr_left = next_left;
+    curr_reminder = next_reminder;
+    curr_right = next_right;
+
+    for(int i = 1; i < ump->size - 1; ++i){
+        if (h[i+1] <= 1) {
+            next_left = 0;
+            next_reminder = h[i+1];
+            next_right = 0;
+        } else {
+            next_left = __builtin_popcount(g() & ((1 << h[i+1]) - 1));
+            next_reminder = 0;
+            next_right = h[i+1] - next_left;
+        }
+
+        dh[i] = prev_right + curr_reminder + next_left;
+        prev_right = curr_right;
+        
+        curr_left = next_left;
+        curr_reminder = next_reminder;
+        curr_right = next_right;
+    }
+
+    dh[ump->size - 1] = prev_right + curr_reminder;
+    spill_right = curr_right;
+
+    ump->spill_left = spill_left;
+    ump->spill_right = spill_right;
 }
 
 //===================================================================
 #ifdef STAT_TEST
-void save_array(std::ofstream* activity_out, Manna_Array h){
-    for(int i = 0; i < NN; ++i) *activity_out << h[i] << ",";
+void save_array(std::ofstream* activity_out, UnboundedMannaProblem** umps, int threads){
+    for(int i = 0; i < threads; ++i){
+        for(int j = 0; j < NN/threads ; ++j){
+            *activity_out << umps[i]->h[j] << ",";
+        }
+    }
     *activity_out << "\n";
 }
 #endif
@@ -184,67 +223,93 @@ int main()
 {
 
     // nro granitos en cada sitio, y su update
-    alignas(64) Manna_Array h, dh, rh, *ph, *pdh, *prh, *ptmp;
-    ph = &h;
-    pdh = &dh;
-    prh = &rh;
+    alignas(64) Manna_Array h;
 
     std::cout << "estado inicial estable de la pila de arena...";
     inicializacion(h);
     std::cout << "LISTO" << std::endl;
-#ifdef DEBUG
-    imprimir_array(h);
-#endif
 
     std::cout << "estado inicial desestabilizado de la pila de arena...";
     desestabilizacion_inicial(h);
     std::cout << "LISTO" << std::endl;
-#ifdef DEBUG
-    imprimir_array(h);
-#endif
 
-    std::cout << "evolucion de la pila de arena...";
+    std::cout << "evolucion de la pila de arena...\n";
     std::cout.flush();
 
+#ifdef STAT_TEST
     std::ofstream activity_out("pilas.dat");
+#endif
     int activity;
     int t = 0;
     std::vector<ull> time_recorder;
     // Print amount of threads omp
-    int threads = omp_get_max_threads();
-    // XoshiroCpp::SplitMix64* generators;
-    // for (int i = 0; i < threads; ++i) generators[i] = XoshiroCpp::SplitMix64(initial_generator());
+    int threads = omp_get_max_threads(); ;
+    UnboundedMannaProblem** umps = new UnboundedMannaProblem*[threads];
 
-    // # pragma omp parallel for schedule(static) shared(rh)
-    for (int i = 0; i < NN; ++i) rh[i] = initial_generator(); //generators[omp_get_thread_num()]();
+    for (int i = 0; i < threads; ++i) {
+        umps[i] = new UnboundedMannaProblem(NN/threads);
 
-    // omp_set_num_threads(NUM_THREADS);
+        // Access and modify the Manna arrays of the i-th problem
+        Small_Manna_Array& hArray = umps[i]->h;
+
+        // Example usage: assign values to the arrays
+        for (int j = 0; j < NN/threads; ++j) {
+            hArray[j] = h[(i * (NN/threads))+j];
+        }
+    }
+
     std::cout << std::endl << "omp_get_max_threads() = " << threads << std::endl;
-    // Assert threads is a power of 2
-    // assert((threads & (threads - 1)) == 0);
+#ifdef STAT_TEST
+        save_array(&activity_out, umps, threads); // TODO: CHANGE
+#endif
     do {
         activity = 0;
-        // TODO: Maybe pragma?
-        // #pragma omp parallel for schedule(static)
-        if (t % 2 == 0) {
-            ph = &h;
-            pdh = &dh;
-            prh = &rh;
-        } else {
-            ph = &dh;
-            pdh = &h;
-            prh = &rh;
+        auto start = std::chrono::high_resolution_clock::now();
+        # pragma omp parallel for num_threads(threads)
+        for(int i = 0; i < threads; ++i){
+            descargar(umps[i]);
         }
-        auto start = std::chrono::high_resolution_clock::now(); // Start measuring time
+
+        // std::cout<<"entro a correccion" << std::endl;
+        for(int i = 0; i < threads; ++i){
+            UnboundedMannaProblem* next_ump = umps[(i + 1) % threads];
+            UnboundedMannaProblem* prev_ump = umps[(i - 1 + threads) % threads];
+
+            umps[i]->dh[0]    += prev_ump->spill_right;
+            umps[i]->dh[(NN/threads) - 1] += next_ump->spill_left;
+        }
+        // std::cout<<"salio a correccion" << std::endl;
+
         
-        descargar(*ph, *pdh, *prh);
-        
-        auto end = std::chrono::high_resolution_clock::now(); // Stop measuring time
+        // std::cout<<"entro a swaps" << std::endl;
+        for(int i = 0; i < threads; ++i){
+            // std::cout<< "h tiene valor "<< (umps[i]->h) <<std::flush;
+            // std::cout<< " y apunta " << *(umps[i]->h) << std::endl;
+            umps[i]->Swap(); // TODO: Ojo
+            // std::cout<< "h tiene valor "<< (umps[i]->h) <<std::flush;
+            // std::cout<< " y apunta " << *(umps[i]->h) << std::endl;
+        }
+        // std::cout<<"salio a swaps" << std::endl;
+
+        auto end = std::chrono::high_resolution_clock::now();
 
         time_recorder.push_back(std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count());
-        for(int i = 0; i < NN; ++i) if ((*ph)[i] > 1) activity += 1;
+
+
+        // std::cout<<"entro a actividad" << std::endl;
+        for(int i = 0; i < threads; ++i) {
+            // std::cout<< "h tiene valor "<< (umps[i]->h) <<std::flush;
+            // std::cout<< " y apunta " << *(umps[i]->h) << std::endl;
+            for(int j = 0; j < NN/threads; ++j){
+                // std::cout<<"i: "<< i << " and j: "<<j << std::endl;
+                if (umps[i]->h[j] > 1) activity += 1;
+            }
+        }
+        // std::cout<<"salio a actividad" << std::endl;
+
+        // std::cout << "\r Activity" << t << " " << activity << std::endl;
 #ifdef STAT_TEST
-        save_array(&activity_out, *ph);
+        save_array(&activity_out, umps, threads); // TODO: CHANGE
 #endif
         ++t;
     } while (activity > 0 && t < NSTEPS); // si la actividad decae a cero, esto no evoluciona mas...
@@ -266,7 +331,6 @@ int main()
     std::cout << "Tiempo promedio de ejecucion de la parte 3: " << p3 << " ns\t represents\t" << float(int((double(p3)/pt)*100*100))/100 << "%" << std::endl;
     std::cout << "Tiempo promedio de ejecucion de la parte 4: " << p4 << " ns\t represents\t" << float(int((double(p4)/pt)*100*100))/100 << "%" << std::endl;
 #endif
-
 
     return 0;
 }
